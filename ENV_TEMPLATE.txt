@@ -1,0 +1,32 @@
+# Copy this content to a new file called .env.local in your project root
+
+# NextAuth Configuration (Required)
+NEXTAUTH_SECRET="your-super-secret-key-here-at-least-32-characters-long"
+NEXTAUTH_URL="http://localhost:3000"
+
+# Clarifai API Configuration (Required for AI features)
+# Get your API Key from: https://portal.clarifai.com/settings/security
+# Example format: d0a1e2fb8c164b0a909189ee221f886e
+CLARIFAI_API_KEY="your_clarifai_api_key_here"
+
+# Note: This uses the official Clarifai Node.js client for better reliability
+
+# Clarifai User ID (Optional - for reference)
+# CLARIFAI_USER_ID="hr7ih1tvry71"
+
+# Optional: Customize AI behavior
+AI_MODEL="gpt-oss-120b"
+AI_TEMPERATURE="0.7"
+AI_MAX_TOKENS="2048"
+AI_TOP_P="0.9"
+
+# Database Configuration (Optional - for future use)
+# DATABASE_URL="postgresql://username:password@localhost:5432/chargedup_ai"
+# SUPABASE_URL="your_supabase_url"
+# SUPABASE_ANON_KEY="your_supabase_anon_key"
+
+# Video Generation APIs (Optional - for future features)
+# VO3_API_KEY="your_vo3_api_key_here"
+# CLOUDINARY_CLOUD_NAME="your_cloudinary_cloud_name"
+# CLOUDINARY_API_KEY="your_cloudinary_api_key"
+# CLOUDINARY_API_SECRET="your_cloudinary_api_secret"
