@@ -65,43 +65,43 @@ export default function SystemSettings() {
 
   // Mock data - replace with actual API calls
   useEffect(() => {
-    setGeneralSettings({
-      companyName: '',
-      supportEmail: '',
-      timezone: 'UTC',
-      dateFormat: 'MM/DD/YYYY'
-    })
-    
-    setSecuritySettings({
-      sessionTimeout: 30,
-      maxLoginAttempts: 5,
-      requireTwoFactor: false,
-      passwordMinLength: 8,
-      passwordComplexity: 'medium'
-    })
-    
-    setEmailSettings({
-      smtpHost: '',
-      smtpPort: 587,
-      smtpUsername: '',
-      smtpPassword: '',
-      fromEmail: '',
-      fromName: ''
-    })
-    
-    setNotificationSettings({
-      emailNotifications: true,
-      browserNotifications: true,
-      newsletterAlerts: true,
-      meetingReminders: true,
-      systemAlerts: true
-    })
-    
-    setAppearanceSettings({
-      theme: 'dark',
-      primaryColor: '#f97316',
-      sidebarCollapsed: false,
-      compactMode: false
+    setSettings({
+      general: {
+        companyName: '',
+        supportEmail: '',
+        timezone: 'UTC',
+        dateFormat: 'MM/DD/YYYY',
+        language: 'en'
+      },
+      security: {
+        sessionTimeout: 30,
+        maxLoginAttempts: 5,
+        requireTwoFactor: false,
+        passwordMinLength: 8,
+        enableAuditLog: false
+      },
+      email: {
+        smtpHost: '',
+        smtpPort: 587,
+        smtpUsername: '',
+        smtpPassword: '',
+        fromEmail: '',
+        fromName: '',
+        enableNotifications: true
+      },
+      notifications: {
+        emailNotifications: true,
+        slackNotifications: false,
+        slackWebhook: '',
+        dailyDigest: false,
+        weeklyReport: false
+      },
+      appearance: {
+        theme: 'dark',
+        primaryColor: '#f97316',
+        logoUrl: '',
+        faviconUrl: ''
+      }
     })
   }, [])
 

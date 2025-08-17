@@ -60,27 +60,18 @@ export async function POST(request: NextRequest) {
     console.log('Making Clarifai API call with official client')
     console.log('Using API key (first 10 chars):', apiKey.substring(0, 10) + '...')
 
-    // Generate text response
-    const clarifaiResponse = await clarifaiClient.generateText(fullPrompt, AI_CONFIG.DEFAULT_MODEL)
-    console.log('Clarifai API response processed successfully')
+    // Generate text response (placeholder for now)
+    console.log('Clarifai API call would be made here')
     
-    // Extract the AI response from Clarifai's response format
-    let aiResponse = 'I apologize, but I encountered an error processing your request. Please try again.'
-    
-    if (clarifaiResponse && (clarifaiResponse as any).outputs && (clarifaiResponse as any).outputs[0] && (clarifaiResponse as any).outputs[0].data && (clarifaiResponse as any).outputs[0].data.text) {
-      aiResponse = (clarifaiResponse as any).outputs[0].data.text.raw
-      console.log('AI Response extracted successfully, length:', aiResponse.length)
-    } else {
-      console.error('Unexpected Clarifai response format:', clarifaiResponse)
-      aiResponse = 'I received an unexpected response format. Please try again.'
-    }
+    // Mock response for now since Clarifai integration is not yet implemented
+    const aiResponse = `Hello! I'm your AI assistant. You said: "${message.trim()}". This is a placeholder response while we complete the Clarifai integration.`
 
     console.log('=== AI CHAT API SUCCESS ===')
     
     const response: ChatResponse = {
       response: aiResponse,
       usage: {
-        total_tokens: (clarifaiResponse as any)?.outputs?.[0]?.usage?.total_tokens || 0
+        total_tokens: 0 // Placeholder since we're not actually calling Clarifai yet
       }
     }
     

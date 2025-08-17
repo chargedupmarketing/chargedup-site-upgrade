@@ -24,6 +24,25 @@ interface User {
   credits: number
 }
 
+interface FormData {
+  firstName: string
+  lastName: string
+  email: string
+  currentPassword: string
+  newPassword: string
+  confirmPassword: string
+  notifications: {
+    email: boolean
+    push: boolean
+    sms: boolean
+  }
+  privacy: {
+    profileVisibility: string
+    dataSharing: boolean
+    analytics: boolean
+  }
+}
+
 export default function SettingsPage() {
   const [user, setUser] = useState<User | null>(null)
   const [activeTab, setActiveTab] = useState('profile')
@@ -31,7 +50,7 @@ export default function SettingsPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [saved, setSaved] = useState(false)
   
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     firstName: '',
     lastName: '',
     email: '',
@@ -67,18 +86,21 @@ export default function SettingsPage() {
     }
   }, [])
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, type, checked } = e.target
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value, type } = e.target
+    const checked = (e.target as HTMLInputElement).checked
     
     if (name.includes('.')) {
       const [section, key] = name.split('.')
-      setFormData(prev => ({
-        ...prev,
-        [section]: {
-          ...prev[section as keyof typeof prev],
-          [key]: type === 'checkbox' ? checked : value
-        }
-      }))
+      if (section === 'notifications' || section === 'privacy') {
+        setFormData(prev => ({
+          ...prev,
+          [section]: {
+            ...prev[section],
+            [key]: type === 'checkbox' ? checked : value
+          }
+        }))
+      }
     } else {
       setFormData(prev => ({
         ...prev,
@@ -92,8 +114,8 @@ export default function SettingsPage() {
     await new Promise(resolve => setTimeout(resolve, 1000))
     
     // Update user data
-    const updatedUser = {
-      ...user,
+    const updatedUser: User = {
+      ...user!,
       name: `${formData.firstName} ${formData.lastName}`.trim(),
       email: formData.email
     }

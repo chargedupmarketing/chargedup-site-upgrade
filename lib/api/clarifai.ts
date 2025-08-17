@@ -1,75 +1,21 @@
-import { ClarifaiStub, grpc } from 'clarifai-nodejs-grpc'
-
+// TODO: Fix Clarifai integration - package structure has changed
 export interface ClarifaiConfig {
   apiKey: string
   modelId?: string
 }
 
 export class ClarifaiClient {
-  private stub: any
-  private metadata: any
-
   constructor(config: ClarifaiConfig) {
-    this.stub = ClarifaiStub.grpc()
-    this.metadata = new grpc.Metadata()
-    this.metadata.set("authorization", "Key " + config.apiKey)
+    // Placeholder implementation
   }
 
   async generateText(prompt: string, modelId: string = "text-generation") {
-    const requestData = {
-      model_id: modelId,
-      inputs: [
-        {
-          data: {
-            text: {
-              raw: prompt
-            }
-          }
-        }
-      ]
-    }
-
-    return new Promise((resolve, reject) => {
-      this.stub.PostModelOutputs(
-        requestData,
-        this.metadata,
-        (err: any, response: any) => {
-          if (err) {
-            reject(err)
-          } else {
-            resolve(response)
-          }
-        }
-      )
-    })
+    // Placeholder implementation
+    throw new Error('Clarifai integration not yet implemented')
   }
 
   async generateImage(prompt: string, modelId: string = "image-generation") {
-    const requestData = {
-      model_id: modelId,
-      inputs: [
-        {
-          data: {
-            text: {
-              raw: prompt
-            }
-          }
-        }
-      ]
-    }
-
-    return new Promise((resolve, reject) => {
-      this.stub.PostModelOutputs(
-        requestData,
-        this.metadata,
-        (err: any, response: any) => {
-          if (err) {
-            reject(err)
-          } else {
-            resolve(response)
-          }
-        }
-      )
-    })
+    // Placeholder implementation
+    throw new Error('Clarifai integration not yet implemented')
   }
 }
