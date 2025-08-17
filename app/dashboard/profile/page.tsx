@@ -1,449 +1,398 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { useRouter } from 'next/navigation';
+import { authService } from '@/lib/auth-service';
+import { User } from '@/lib/types/auth';
 import {
-  User,
+  User as UserIcon,
+  Mail,
+  Calendar,
   Shield,
-  CreditCard,
-  MessageSquare,
-  Video,
-  Settings,
-  Check,
-  AlertCircle,
+  Package,
+  Edit3,
+  Save,
+  X,
 } from 'lucide-react';
 
 export default function ProfilePage() {
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [isEditing, setIsEditing] = useState(false);
-  const [formData, setFormData] = useState({
+  const [editForm, setEditForm] = useState({
     name: '',
     email: '',
-    currentPassword: '',
-    newPassword: '',
-    confirmPassword: '',
   });
-  const [message, setMessage] = useState<{
-    type: 'success' | 'error';
-    text: string;
-  } | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
-    // Get user data from localStorage
-    const userData = localStorage.getItem('user');
-    if (userData) {
-      const user = JSON.parse(userData);
-      setUser(user);
-      setFormData(prev => ({ ...prev, name: user.name, email: user.email }));
-    }
-  }, []);
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData(prev => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
-  };
-
-  const handleSaveProfile = async () => {
-    if (!formData.name.trim()) {
-      setMessage({ type: 'error', text: 'Name is required' });
+    const currentUser = authService.getCurrentUser();
+    if (!currentUser) {
+      router.push('/auth/service-login');
       return;
     }
+    setUser(currentUser);
+    setEditForm({
+      name: currentUser.name,
+      email: currentUser.email,
+    });
+  }, [router]);
 
-    setIsLoading(true);
-
-    try {
-      // TODO: Replace with actual API call
-      // const response = await fetch('/api/user/profile', {
-      //   method: 'PUT',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({ name: formData.name })
-      // })
-
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-
-      // Update local user data
-      const updatedUser = { ...user, name: formData.name };
-      localStorage.setItem('user', JSON.stringify(updatedUser));
+  const handleSave = () => {
+    // In production, this would update the user profile via API
+    if (user) {
+      const updatedUser = { ...user, ...editForm };
       setUser(updatedUser);
-
-      setMessage({ type: 'success', text: 'Profile updated successfully!' });
-      setIsEditing(false);
-    } catch (error) {
-      setMessage({
-        type: 'error',
-        text: 'Failed to update profile. Please try again.',
-      });
-    } finally {
-      setIsLoading(false);
+      // Update localStorage
+      localStorage.setItem('user', JSON.stringify(updatedUser));
     }
+    setIsEditing(false);
   };
 
-  const handleChangePassword = async () => {
-    if (
-      !formData.currentPassword ||
-      !formData.newPassword ||
-      !formData.confirmPassword
-    ) {
-      setMessage({ type: 'error', text: 'All password fields are required' });
-      return;
-    }
-
-    if (formData.newPassword !== formData.confirmPassword) {
-      setMessage({ type: 'error', text: 'New passwords do not match' });
-      return;
-    }
-
-    if (formData.newPassword.length < 6) {
-      setMessage({
-        type: 'error',
-        text: 'New password must be at least 6 characters',
-      });
-      return;
-    }
-
-    setIsLoading(true);
-
-    try {
-      // TODO: Replace with actual API call
-      // const response = await fetch('/api/user/profile', {
-      //   method: 'PUT',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({
-      //     currentPassword: formData.currentPassword,
-      //     newPassword: formData.newPassword
-      //   })
-      // })
-
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-
-      setMessage({ type: 'success', text: 'Password changed successfully!' });
-      setFormData(prev => ({
-        ...prev,
-        currentPassword: '',
-        newPassword: '',
-        confirmPassword: '',
-      }));
-    } catch (error) {
-      setMessage({
-        type: 'error',
-        text: 'Failed to change password. Please check your current password.',
-      });
-    } finally {
-      setIsLoading(false);
-    }
+  const handleCancel = () => {
+    setEditForm({
+      name: user?.name || '',
+      email: user?.email || '',
+    });
+    setIsEditing(false);
   };
 
   if (!user) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="p-6">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-orange-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-white text-lg">Loading...</p>
+          <p className="text-white/60">Loading your profile...</p>
         </div>
       </div>
     );
   }
 
+  const isColdDM = user.serviceType === 'colddm';
+  const isAIPlatform = user.serviceType === 'ai-platform';
+
   return (
-    <div className="flex-1 p-6">
-      <div className="max-w-4xl mx-auto">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-8"
-        >
-          <div className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-2 rounded-full text-sm font-medium mb-4">
-            <User className="w-4 h-4" />
-            Profile Settings
-          </div>
-          <h1 className="text-3xl font-bold text-white mb-4">
-            Manage Your Account
-          </h1>
-          <p className="text-gray-400 text-lg">
-            Update your profile information and manage your account settings
+    <div className="p-6 space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-white">Profile Settings</h1>
+          <p className="text-white/60">
+            Manage your account information and preferences
           </p>
-        </motion.div>
-
-        <div className="grid lg:grid-cols-3 gap-8">
-          {/* Profile Information */}
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.2 }}
-            className="lg:col-span-2 space-y-6"
+        </div>
+        {!isEditing ? (
+          <button
+            onClick={() => setIsEditing(true)}
+            className="flex items-center gap-2 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-semibold px-4 py-2 rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
           >
-            {/* Basic Info */}
-            <div className="bg-gray-800/50 rounded-2xl p-6 border border-gray-700/50">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-semibold text-white">
-                  Basic Information
-                </h2>
-                {!isEditing && (
-                  <button
-                    onClick={() => setIsEditing(true)}
-                    className="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg font-medium transition-colors"
-                  >
-                    Edit
-                  </button>
-                )}
-              </div>
+            <Edit3 className="w-4 h-4" />
+            Edit Profile
+          </button>
+        ) : (
+          <div className="flex gap-2">
+            <button
+              onClick={handleSave}
+              className="flex items-center gap-2 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold px-4 py-2 rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+            >
+              <Save className="w-4 h-4" />
+              Save
+            </button>
+            <button
+              onClick={handleCancel}
+              className="flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white font-semibold px-4 py-2 rounded-lg transition-all duration-300"
+            >
+              <X className="w-4 h-4" />
+              Cancel
+            </button>
+          </div>
+        )}
+      </div>
 
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
-                    Full Name
-                  </label>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Profile Information */}
+        <div className="lg:col-span-2 space-y-6">
+          {/* Basic Information */}
+          <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl p-6">
+            <h3 className="text-lg font-semibold text-white mb-6 flex items-center gap-2">
+              <UserIcon className="w-5 h-5 text-orange-400" />
+              Basic Information
+            </h3>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-white/80 mb-2">
+                  Full Name
+                </label>
+                {isEditing ? (
                   <input
                     type="text"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleInputChange}
-                    disabled={!isEditing}
-                    className="w-full bg-gray-700/50 border border-gray-600/50 rounded-xl px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:border-purple-500/50 focus:ring-1 focus:ring-purple-500/20 transition-all duration-200 disabled:opacity-50"
+                    value={editForm.name}
+                    onChange={e =>
+                      setEditForm({ ...editForm, name: e.target.value })
+                    }
+                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-white/40 focus:outline-none focus:border-orange-500/50 focus:ring-1 focus:ring-orange-500/20 transition-all duration-300"
                   />
-                </div>
+                ) : (
+                  <p className="text-white text-lg">{user.name}</p>
+                )}
+              </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
-                    Email Address
-                  </label>
+              <div>
+                <label className="block text-sm font-medium text-white/80 mb-2">
+                  Email Address
+                </label>
+                {isEditing ? (
                   <input
                     type="email"
-                    name="email"
-                    value={formData.email}
-                    disabled
-                    className="w-full bg-gray-700/50 border border-gray-600/50 rounded-xl px-4 py-3 text-white opacity-50 cursor-not-allowed"
+                    value={editForm.email}
+                    onChange={e =>
+                      setEditForm({ ...editForm, email: e.target.value })
+                    }
+                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-white/40 focus:outline-none focus:border-orange-500/50 focus:ring-1 focus:ring-orange-500/20 transition-all duration-300"
                   />
-                  <p className="text-gray-500 text-sm mt-1">
-                    Email cannot be changed
-                  </p>
-                </div>
-
-                {isEditing && (
-                  <div className="flex gap-3 pt-4">
-                    <button
-                      onClick={handleSaveProfile}
-                      disabled={isLoading}
-                      className="px-6 py-2 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white rounded-lg font-medium transition-all duration-200 disabled:opacity-50 flex items-center gap-2"
-                    >
-                      {isLoading ? (
-                        <>
-                          <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                          Saving...
-                        </>
-                      ) : (
-                        <>
-                          <Check className="w-4 h-4" />
-                          Save Changes
-                        </>
-                      )}
-                    </button>
-                    <button
-                      onClick={() => {
-                        setIsEditing(false);
-                        setFormData(prev => ({ ...prev, name: user.name }));
-                      }}
-                      className="px-6 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg font-medium transition-colors"
-                    >
-                      Cancel
-                    </button>
-                  </div>
+                ) : (
+                  <p className="text-white text-lg">{user.email}</p>
                 )}
               </div>
             </div>
+          </div>
 
-            {/* Change Password */}
-            <div className="bg-gray-800/50 rounded-2xl p-6 border border-gray-700/50">
-              <h2 className="text-xl font-semibold text-white mb-6">
-                Change Password
-              </h2>
+          {/* Account Details */}
+          <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl p-6">
+            <h3 className="text-lg font-semibold text-white mb-6 flex items-center gap-2">
+              <Shield className="w-5 h-5 text-orange-400" />
+              Account Details
+            </h3>
 
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
-                    Current Password
-                  </label>
-                  <input
-                    type="password"
-                    name="currentPassword"
-                    value={formData.currentPassword}
-                    onChange={handleInputChange}
-                    className="w-full bg-gray-700/50 border border-gray-600/50 rounded-xl px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:border-purple-500/50 focus:ring-1 focus:ring-purple-500/20 transition-all duration-200"
-                    placeholder="Enter your current password"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
-                    New Password
-                  </label>
-                  <input
-                    type="password"
-                    name="newPassword"
-                    value={formData.newPassword}
-                    onChange={handleInputChange}
-                    className="w-full bg-gray-700/50 border border-gray-600/50 rounded-xl px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:border-purple-500/50 focus:ring-1 focus:ring-purple-500/20 transition-all duration-200"
-                    placeholder="Enter your new password"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
-                    Confirm New Password
-                  </label>
-                  <input
-                    type="password"
-                    name="confirmPassword"
-                    value={formData.confirmPassword}
-                    onChange={handleInputChange}
-                    className="w-full bg-gray-700/50 border border-gray-600/50 rounded-xl px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:border-purple-500/50 focus:ring-1 focus:ring-purple-500/20 transition-all duration-200"
-                    placeholder="Confirm your new password"
-                  />
-                </div>
-
-                <button
-                  onClick={handleChangePassword}
-                  disabled={
-                    isLoading ||
-                    !formData.currentPassword ||
-                    !formData.newPassword ||
-                    !formData.confirmPassword
-                  }
-                  className="w-full px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 disabled:from-gray-600 disabled:to-gray-700 text-white rounded-lg font-medium transition-all duration-200 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="flex items-center gap-4">
+                <div
+                  className={`w-12 h-12 bg-gradient-to-r ${
+                    isColdDM
+                      ? 'from-blue-500 to-blue-600'
+                      : 'from-purple-500 to-purple-600'
+                  } rounded-xl flex items-center justify-center`}
                 >
-                  {isLoading ? (
-                    <>
-                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                      Changing Password...
-                    </>
-                  ) : (
-                    <>
-                      <Shield className="w-5 h-5" />
-                      Change Password
-                    </>
-                  )}
-                </button>
+                  <Package className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <p className="text-white/60 text-sm">Service Type</p>
+                  <p className="text-white font-medium">
+                    {isColdDM ? 'ColdDM Services' : 'AI Marketing Platform'}
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-green-600 rounded-xl flex items-center justify-center">
+                  <Shield className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <p className="text-white/60 text-sm">Package Level</p>
+                  <p className="text-white font-medium capitalize">
+                    {user.packageLevel}
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-purple-600 rounded-xl flex items-center justify-center">
+                  <Calendar className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <p className="text-white/60 text-sm">Member Since</p>
+                  <p className="text-white font-medium">
+                    {new Date(user.createdAt).toLocaleDateString()}
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 bg-gradient-to-r from-orange-500 to-orange-600 rounded-xl flex items-center justify-center">
+                  <Mail className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <p className="text-white/60 text-sm">Last Login</p>
+                  <p className="text-white font-medium">
+                    {new Date(user.lastLoginAt).toLocaleDateString()}
+                  </p>
+                </div>
               </div>
             </div>
+          </div>
 
-            {/* Message Display */}
-            {message && (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className={`p-4 rounded-xl border ${
-                  message.type === 'success'
-                    ? 'bg-green-500/10 border-green-500/20 text-green-400'
-                    : 'bg-red-500/10 border-red-500/20 text-red-400'
+          {/* Service Features */}
+          <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl p-6">
+            <h3 className="text-lg font-semibold text-white mb-6 flex items-center gap-2">
+              <Package className="w-5 h-5 text-orange-400" />
+              Your Plan Features
+            </h3>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {isColdDM ? (
+                <>
+                  <div className="p-4 bg-white/5 rounded-lg border border-white/10">
+                    <h4 className="font-medium text-white mb-2">
+                      Message Limit
+                    </h4>
+                    <p className="text-white/60">
+                      {user.features?.maxMessages === -1
+                        ? 'Unlimited'
+                        : `${user.features?.maxMessages?.toLocaleString()} messages/month`}
+                    </p>
+                  </div>
+                  <div className="p-4 bg-white/5 rounded-lg border border-white/10">
+                    <h4 className="font-medium text-white mb-2">
+                      Social Accounts
+                    </h4>
+                    <p className="text-white/60">
+                      {user.features?.socialAccounts === -1
+                        ? 'Unlimited'
+                        : `${user.features?.socialAccounts} accounts`}
+                    </p>
+                  </div>
+                  <div className="p-4 bg-white/5 rounded-lg border border-white/10">
+                    <h4 className="font-medium text-white mb-2">
+                      Analytics Level
+                    </h4>
+                    <p className="text-white/60 capitalize">
+                      {user.features?.analytics}
+                    </p>
+                  </div>
+                  <div className="p-4 bg-white/5 rounded-lg border border-white/10">
+                    <h4 className="font-medium text-white mb-2">
+                      Support Level
+                    </h4>
+                    <p className="text-white/60 capitalize">
+                      {user.features?.support}
+                    </p>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="p-4 bg-white/5 rounded-lg border border-white/10">
+                    <h4 className="font-medium text-white mb-2">AI Queries</h4>
+                    <p className="text-white/60">
+                      {user.features?.maxQueries === -1
+                        ? 'Unlimited'
+                        : `${user.features?.maxQueries?.toLocaleString()} queries/month`}
+                    </p>
+                  </div>
+                  <div className="p-4 bg-white/5 rounded-lg border border-white/10">
+                    <h4 className="font-medium text-white mb-2">
+                      Analytics Level
+                    </h4>
+                    <p className="text-white/60 capitalize">
+                      {user.features?.analytics}
+                    </p>
+                  </div>
+                  <div className="p-4 bg-white/5 rounded-lg border border-white/10">
+                    <h4 className="font-medium text-white mb-2">
+                      Support Level
+                    </h4>
+                    <p className="text-white/60 capitalize">
+                      {user.features?.support}
+                    </p>
+                  </div>
+                  <div className="p-4 bg-white/5 rounded-lg border border-white/10">
+                    <h4 className="font-medium text-white mb-2">White Label</h4>
+                    <p className="text-white/60">
+                      {user.features?.whiteLabel
+                        ? 'Available'
+                        : 'Not Available'}
+                    </p>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Sidebar */}
+        <div className="space-y-6">
+          {/* Profile Picture */}
+          <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl p-6 text-center">
+            <div className="relative mx-auto mb-4">
+              <div className="w-24 h-24 bg-gradient-to-r from-cyan-400 to-emerald-400 rounded-full flex items-center justify-center overflow-hidden">
+                {user.avatar ? (
+                  <img
+                    src={user.avatar}
+                    alt={user.name}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <span className="text-black font-bold text-3xl">
+                    {user.name
+                      .split(' ')
+                      .map(n => n[0])
+                      .join('')}
+                  </span>
+                )}
+              </div>
+              {isEditing && (
+                <button className="absolute bottom-0 right-0 w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center hover:bg-orange-600 transition-colors">
+                  <Edit3 className="w-4 h-4 text-white" />
+                </button>
+              )}
+            </div>
+            <h3 className="text-lg font-semibold text-white mb-2">
+              {user.name}
+            </h3>
+            <p className="text-white/60 text-sm">{user.email}</p>
+            <div className="mt-4">
+              <span
+                className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
+                  isColdDM
+                    ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
+                    : 'bg-purple-500/20 text-purple-400 border border-purple-500/30'
                 }`}
               >
-                <div className="flex items-center gap-2">
-                  {message.type === 'success' ? (
-                    <Check className="w-5 h-5" />
-                  ) : (
-                    <AlertCircle className="w-5 h-5" />
-                  )}
-                  {message.text}
-                </div>
-              </motion.div>
-            )}
-          </motion.div>
-
-          {/* Sidebar */}
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.4 }}
-            className="space-y-6"
-          >
-            {/* User Card */}
-            <div className="bg-gray-800/50 rounded-2xl p-6 border border-gray-700/50">
-              <div className="text-center">
-                <div className="w-20 h-20 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <User className="w-10 h-10 text-white" />
-                </div>
-                <h3 className="text-xl font-bold text-white mb-2">
-                  {user.name}
-                </h3>
-                <p className="text-gray-400 mb-4">{user.email}</p>
-                <div className="inline-flex items-center gap-2 bg-gray-700/50 px-3 py-1 rounded-full">
-                  <Shield className="w-4 h-4 text-purple-400" />
-                  <span className="text-sm text-gray-300">{user.role}</span>
-                </div>
-              </div>
+                {user.packageLevel} Plan
+              </span>
             </div>
+          </div>
 
-            {/* Usage Stats */}
-            <div className="bg-gray-800/50 rounded-2xl p-6 border border-gray-700/50">
-              <h3 className="text-lg font-semibold text-white mb-4">
-                Usage Statistics
-              </h3>
-
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <CreditCard className="w-5 h-5 text-orange-400" />
-                    <span className="text-gray-300">Credits</span>
+          {/* Quick Actions */}
+          <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl p-6">
+            <h3 className="text-lg font-semibold text-white mb-4">
+              Quick Actions
+            </h3>
+            <div className="space-y-3">
+              <button
+                onClick={() => router.push('/dashboard/billing')}
+                className="w-full text-left p-3 bg-white/5 hover:bg-white/10 rounded-lg transition-all duration-300 border border-white/10 hover:border-white/20"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 bg-gradient-to-r from-green-500 to-green-600 rounded-lg flex items-center justify-center">
+                    <Package className="w-4 h-4 text-white" />
                   </div>
-                  <span className="text-white font-semibold">
-                    {user.credits}
-                  </span>
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <MessageSquare className="w-5 h-5 text-blue-400" />
-                    <span className="text-gray-300">Chats</span>
+                  <div>
+                    <p className="font-medium text-white text-sm">
+                      Billing & Subscription
+                    </p>
+                    <p className="text-white/60 text-xs">Manage your plan</p>
                   </div>
-                  <span className="text-white font-semibold">12</span>
                 </div>
+              </button>
 
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <Video className="w-5 h-5 text-green-400" />
-                    <span className="text-gray-300">Videos</span>
+              <button
+                onClick={() => router.push('/help')}
+                className="w-full text-left p-3 bg-white/5 hover:bg-white/10 rounded-lg transition-all duration-300 border border-white/10 hover:border-white/20"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
+                    <Shield className="w-4 h-4 text-white" />
                   </div>
-                  <span className="text-white font-semibold">5</span>
+                  <div>
+                    <p className="font-medium text-white text-sm">
+                      Help & Support
+                    </p>
+                    <p className="text-white/60 text-xs">Get assistance</p>
+                  </div>
                 </div>
-              </div>
+              </button>
             </div>
-
-            {/* Quick Actions */}
-            <div className="bg-gray-800/50 rounded-2xl p-6 border border-gray-700/50">
-              <h3 className="text-lg font-semibold text-white mb-4">
-                Quick Actions
-              </h3>
-
-              <div className="space-y-3">
-                <button className="w-full text-left p-3 bg-gray-700/50 hover:bg-gray-600/50 rounded-lg transition-colors">
-                  <div className="flex items-center gap-3">
-                    <Settings className="w-5 h-5 text-gray-400" />
-                    <span className="text-gray-300">Account Settings</span>
-                  </div>
-                </button>
-
-                <button className="w-full text-left p-3 bg-gray-700/50 hover:bg-gray-600/50 rounded-lg transition-colors">
-                  <div className="flex items-center gap-3">
-                    <Shield className="w-5 h-5 text-gray-400" />
-                    <span className="text-gray-300">Privacy & Security</span>
-                  </div>
-                </button>
-
-                <button className="w-full text-left p-3 bg-gray-700/50 hover:bg-gray-600/50 rounded-lg transition-colors">
-                  <div className="flex items-center gap-3">
-                    <CreditCard className="w-5 h-5 text-gray-400" />
-                    <span className="text-gray-300">Billing & Plans</span>
-                  </div>
-                </button>
-              </div>
-            </div>
-          </motion.div>
+          </div>
         </div>
       </div>
     </div>

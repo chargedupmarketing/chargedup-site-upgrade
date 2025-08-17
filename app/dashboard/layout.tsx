@@ -27,15 +27,21 @@ import {
   Palette,
   HelpCircle,
   ExternalLink,
+  Brain,
+  Briefcase,
+  Calendar,
+  TrendingUp,
+  Edit3 as EditIcon,
+  Link as LinkIcon,
+  Cpu,
+  Server,
 } from 'lucide-react';
-
-interface User {
-  name: string;
-  email: string;
-  plan: string;
-  credits: number;
-  avatar?: string;
-}
+import { authService } from '@/lib/auth-service';
+import {
+  getToolsForUser,
+  getToolsByCategory,
+} from '@/lib/constants/dashboard-tools';
+import { User as UserType } from '@/lib/types/auth';
 
 export default function DashboardLayout({
   children,
@@ -44,66 +50,56 @@ export default function DashboardLayout({
 }) {
   const router = useRouter();
   const pathname = usePathname();
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<UserType | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
 
   useEffect(() => {
     // Check if user is logged in
-    const userData = localStorage.getItem('user');
-    if (!userData) {
-      router.push('/auth/login');
+    const currentUser = authService.getCurrentUser();
+    if (!currentUser) {
+      router.push('/auth/service-login');
       return;
     }
-
-    const userInfo = JSON.parse(userData);
-    setUser(userInfo);
+    setUser(currentUser);
   }, [router]);
 
   const handleLogout = () => {
-    localStorage.removeItem('user');
-    localStorage.removeItem('isAuthenticated');
-    router.push('/auth/login');
+    authService.logout();
+    router.push('/auth/service-login');
   };
 
-  const navigation = [
-    {
-      name: 'Dashboard',
-      href: '/dashboard',
-      icon: Home,
-      description: 'Overview and analytics',
-    },
-    {
-      name: 'AI Chat',
-      href: '/dashboard/ai-chat',
-      icon: MessageSquare,
-      description: 'Chat with AI assistant',
-    },
-    {
-      name: 'Analytics',
-      href: '/dashboard/analytics',
-      icon: BarChart3,
-      description: 'Performance metrics',
-    },
-    {
-      name: 'Templates',
-      href: '/dashboard/templates',
-      icon: Target,
-      description: 'Response templates',
-    },
-    {
-      name: 'Settings',
-      href: '/dashboard/settings',
-      icon: Settings,
-      description: 'Account preferences',
-    },
-  ];
+  // Get available tools for the current user
+  const availableTools = user
+    ? getToolsForUser(user.serviceType, user.packageLevel)
+    : [];
+  const toolsByCategory = getToolsByCategory(availableTools);
+
+  // Icon mapping for tools
+  const iconMap: { [key: string]: any } = {
+    Home,
+    User,
+    CreditCard,
+    MessageSquare,
+    BarChart3,
+    Target,
+    Globe,
+    Users,
+    Calendar,
+    TrendingUp,
+    Briefcase,
+    Brain,
+    EditIcon,
+    LinkIcon,
+    Cpu,
+    Server,
+  };
 
   const profileMenuItems = [
     {
       name: 'Profile Settings',
       icon: User,
-      href: '/dashboard/settings',
+      href: '/dashboard/profile',
       description: 'Edit your profile information',
     },
     {
@@ -115,14 +111,8 @@ export default function DashboardLayout({
     {
       name: 'Billing',
       icon: CreditCard,
-      href: '/dashboard/settings?tab=billing',
+      href: '/dashboard/billing',
       description: 'Manage your subscription',
-    },
-    {
-      name: 'Appearance',
-      icon: Palette,
-      href: '/dashboard/settings?tab=appearance',
-      description: 'Customize your dashboard',
     },
     {
       name: 'Help & Support',
@@ -168,12 +158,26 @@ export default function DashboardLayout({
           {/* Sidebar Header */}
           <div className="p-6 border-b border-white/10">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-r from-orange-500 to-orange-600 rounded-xl flex items-center justify-center">
-                <Zap className="w-6 h-6 text-white" />
+              <div
+                className={`w-10 h-10 bg-gradient-to-r ${
+                  user.serviceType === 'colddm'
+                    ? 'from-blue-500 to-blue-600'
+                    : 'from-purple-500 to-purple-600'
+                } rounded-xl flex items-center justify-center`}
+              >
+                {user.serviceType === 'colddm' ? (
+                  <MessageSquare className="w-6 h-6 text-white" />
+                ) : (
+                  <Brain className="w-6 h-6 text-white" />
+                )}
               </div>
               <div>
                 <h1 className="text-lg font-bold text-white">ChargedUp</h1>
-                <p className="text-xs text-white/60">AI Marketing Platform</p>
+                <p className="text-xs text-white/60">
+                  {user.serviceType === 'colddm'
+                    ? 'ColdDM Services'
+                    : 'AI Marketing Platform'}
+                </p>
               </div>
             </div>
           </div>
@@ -212,12 +216,24 @@ export default function DashboardLayout({
                   </h3>
                   <p className="text-white/60 text-sm truncate">{user.email}</p>
                   <div className="flex items-center gap-2 mt-1">
-                    <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-orange-500/20 text-orange-400 border border-orange-500/30">
-                      {user.plan} Plan
+                    <span
+                      className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                        user.serviceType === 'colddm'
+                          ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
+                          : 'bg-purple-500/20 text-purple-400 border border-purple-500/30'
+                      }`}
+                    >
+                      {user.packageLevel} Plan
                     </span>
                     <span className="text-xs text-white/40">•</span>
-                    <span className="text-xs text-orange-400 font-medium">
-                      {user.credits} credits
+                    <span
+                      className={`text-xs font-medium ${
+                        user.serviceType === 'colddm'
+                          ? 'text-blue-400'
+                          : 'text-purple-400'
+                      }`}
+                    >
+                      {user.serviceType === 'colddm' ? 'ColdDM' : 'AI Platform'}
                     </span>
                   </div>
                 </div>
@@ -255,22 +271,20 @@ export default function DashboardLayout({
                           onClick={() => {
                             router.push(item.href);
                             setProfileMenuOpen(false);
-                            setSidebarOpen(false);
                           }}
-                          initial={{ opacity: 0, x: -10 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          className="w-full flex items-center gap-3 p-3 text-white/70 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-200 text-left group"
+                          whileHover={{ x: 4 }}
+                          whileTap={{ scale: 0.98 }}
+                          className="w-full group flex items-center gap-3 px-4 py-3 text-white/70 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-300"
                         >
-                          <Icon className="w-4 h-4 text-white/60 group-hover:text-white" />
-                          <div className="flex-1 min-w-0">
-                            <div className="font-medium text-sm truncate">
+                          <Icon className="w-5 h-5 text-white/60 group-hover:text-white" />
+                          <div className="text-left flex-1 min-w-0">
+                            <div className="font-medium truncate">
                               {item.name}
                             </div>
                             <div className="text-xs text-white/50 truncate">
                               {item.description}
                             </div>
                           </div>
-                          <ExternalLink className="w-3 h-3 text-white/40 group-hover:text-white/60" />
                         </motion.button>
                       );
                     })}
@@ -282,39 +296,455 @@ export default function DashboardLayout({
 
           {/* Navigation */}
           <nav className="flex-1 p-6 overflow-y-auto">
-            <div className="space-y-2">
-              {navigation.map(item => {
-                const isActive = pathname === item.href;
-                const Icon = item.icon;
+            {/* Core Tools */}
+            {toolsByCategory.core.length > 0 && (
+              <div className="mb-6">
+                <h3 className="text-xs font-semibold text-white/40 uppercase tracking-wider mb-3">
+                  Core Tools
+                </h3>
+                <div className="space-y-2">
+                  {toolsByCategory.core.map(item => {
+                    const Icon = iconMap[item.icon] || Home;
+                    const isActive = pathname === item.href;
 
-                return (
-                  <motion.button
-                    key={item.name}
-                    onClick={() => {
-                      router.push(item.href);
-                      setSidebarOpen(false);
-                    }}
-                    whileHover={{ x: 4 }}
-                    whileTap={{ scale: 0.98 }}
-                    className={`w-full group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 ${
-                      isActive
-                        ? 'bg-orange-500/20 border border-orange-500/30 text-white shadow-lg shadow-orange-500/25'
-                        : 'text-white/70 hover:text-white hover:bg-white/10 border border-transparent hover:border-white/20'
-                    }`}
-                  >
-                    <Icon
-                      className={`w-5 h-5 ${isActive ? 'text-orange-400' : 'text-white/60 group-hover:text-white'}`}
-                    />
-                    <div className="text-left flex-1 min-w-0">
-                      <div className="font-medium truncate">{item.name}</div>
-                      <div className="text-xs text-white/50 truncate">
-                        {item.description}
-                      </div>
+                    return (
+                      <motion.button
+                        key={item.id}
+                        onClick={() => {
+                          router.push(item.href);
+                          setSidebarOpen(false);
+                        }}
+                        whileHover={{ x: 4 }}
+                        whileTap={{ scale: 0.98 }}
+                        className={`w-full group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 ${
+                          isActive
+                            ? 'bg-orange-500/20 border border-orange-500/30 text-white shadow-lg shadow-orange-500/25'
+                            : 'text-white/70 hover:text-white hover:bg-white/10 border border-transparent hover:border-white/20'
+                        }`}
+                      >
+                        <Icon
+                          className={`w-5 h-5 ${isActive ? 'text-orange-400' : 'text-white/60 group-hover:text-white'}`}
+                        />
+                        <div className="text-left flex-1 min-w-0">
+                          <div className="font-medium truncate">
+                            {item.name}
+                          </div>
+                          <div className="text-xs text-white/50 truncate">
+                            {item.description}
+                          </div>
+                        </div>
+                      </motion.button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* Service-Specific Tools */}
+            {user.serviceType === 'colddm' && (
+              <>
+                {/* Marketing Tools */}
+                {toolsByCategory.marketing.length > 0 && (
+                  <div className="mb-6">
+                    <h3 className="text-xs font-semibold text-white/40 uppercase tracking-wider mb-3">
+                      Marketing Tools
+                    </h3>
+                    <div className="space-y-2">
+                      {toolsByCategory.marketing.map(item => {
+                        const Icon = iconMap[item.icon] || Target;
+                        const isActive = pathname === item.href;
+
+                        return (
+                          <motion.button
+                            key={item.id}
+                            onClick={() => {
+                              router.push(item.href);
+                              setSidebarOpen(false);
+                            }}
+                            whileHover={{ x: 4 }}
+                            whileTap={{ scale: 0.98 }}
+                            className={`w-full group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 ${
+                              isActive
+                                ? 'bg-blue-500/20 border border-blue-500/30 text-white shadow-lg shadow-blue-500/25'
+                                : 'text-white/70 hover:text-white hover:bg-white/10 border border-transparent hover:border-white/20'
+                            }`}
+                          >
+                            <Icon
+                              className={`w-5 h-5 ${isActive ? 'text-blue-400' : 'text-white/60 group-hover:text-white'}`}
+                            />
+                            <div className="text-left flex-1 min-w-0">
+                              <div className="font-medium truncate">
+                                {item.name}
+                              </div>
+                              <div className="text-xs text-white/50 truncate">
+                                {item.description}
+                              </div>
+                            </div>
+                          </motion.button>
+                        );
+                      })}
                     </div>
-                  </motion.button>
-                );
-              })}
-            </div>
+                  </div>
+                )}
+
+                {/* Analytics Tools */}
+                {toolsByCategory.analytics.length > 0 && (
+                  <div className="mb-6">
+                    <h3 className="text-xs font-semibold text-white/40 uppercase tracking-wider mb-3">
+                      Analytics & Insights
+                    </h3>
+                    <div className="space-y-2">
+                      {toolsByCategory.analytics.map(item => {
+                        const Icon = iconMap[item.icon] || BarChart3;
+                        const isActive = pathname === item.href;
+
+                        return (
+                          <motion.button
+                            key={item.id}
+                            onClick={() => {
+                              router.push(item.href);
+                              setSidebarOpen(false);
+                            }}
+                            whileHover={{ x: 4 }}
+                            whileTap={{ scale: 0.98 }}
+                            className={`w-full group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 ${
+                              isActive
+                                ? 'bg-blue-500/20 border border-blue-500/30 text-white shadow-lg shadow-blue-500/25'
+                                : 'text-white/70 hover:text-white hover:bg-white/10 border border-transparent hover:border-white/20'
+                            }`}
+                          >
+                            <Icon
+                              className={`w-5 h-5 ${isActive ? 'text-blue-400' : 'text-white/60 group-hover:text-white'}`}
+                            />
+                            <div className="text-left flex-1 min-w-0">
+                              <div className="font-medium truncate">
+                                {item.name}
+                              </div>
+                              <div className="text-xs text-white/50 truncate">
+                                {item.description}
+                              </div>
+                            </div>
+                          </motion.button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                {/* Automation Tools */}
+                {toolsByCategory.automation.length > 0 && (
+                  <div className="mb-6">
+                    <h3 className="text-xs font-semibold text-white/40 uppercase tracking-wider mb-3">
+                      Automation
+                    </h3>
+                    <div className="space-y-2">
+                      {toolsByCategory.automation.map(item => {
+                        const Icon = iconMap[item.icon] || Rocket;
+                        const isActive = pathname === item.href;
+
+                        return (
+                          <motion.button
+                            key={item.id}
+                            onClick={() => {
+                              router.push(item.href);
+                              setSidebarOpen(false);
+                            }}
+                            whileHover={{ x: 4 }}
+                            whileTap={{ scale: 0.98 }}
+                            className={`w-full group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 ${
+                              isActive
+                                ? 'bg-blue-500/20 border border-blue-500/30 text-white shadow-lg shadow-blue-500/25'
+                                : 'text-white/70 hover:text-white hover:bg-white/10 border border-transparent hover:border-white/20'
+                            }`}
+                          >
+                            <Icon
+                              className={`w-5 h-5 ${isActive ? 'text-blue-400' : 'text-white/60 group-hover:text-white'}`}
+                            />
+                            <div className="text-left flex-1 min-w-0">
+                              <div className="font-medium truncate">
+                                {item.name}
+                              </div>
+                              <div className="text-xs text-white/50 truncate">
+                                {item.description}
+                              </div>
+                            </div>
+                          </motion.button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                {/* Integration Tools */}
+                {toolsByCategory.integrations.length > 0 && (
+                  <div className="mb-6">
+                    <h3 className="text-xs font-semibold text-white/40 uppercase tracking-wider mb-3">
+                      Integrations
+                    </h3>
+                    <div className="space-y-2">
+                      {toolsByCategory.integrations.map(item => {
+                        const Icon = iconMap[item.icon] || Globe;
+                        const isActive = pathname === item.href;
+
+                        return (
+                          <motion.button
+                            key={item.id}
+                            onClick={() => {
+                              router.push(item.href);
+                              setSidebarOpen(false);
+                            }}
+                            whileHover={{ x: 4 }}
+                            whileTap={{ scale: 0.98 }}
+                            className={`w-full group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 ${
+                              isActive
+                                ? 'bg-blue-500/20 border border-blue-500/30 text-white shadow-lg shadow-blue-500/25'
+                                : 'text-white/70 hover:text-white hover:bg-white/10 border border-transparent hover:border-white/20'
+                            }`}
+                          >
+                            <Icon
+                              className={`w-5 h-5 ${isActive ? 'text-blue-400' : 'text-white/60 group-hover:text-white'}`}
+                            />
+                            <div className="text-left flex-1 min-w-0">
+                              <div className="font-medium truncate">
+                                {item.name}
+                              </div>
+                              <div className="text-xs text-white/50 truncate">
+                                {item.description}
+                              </div>
+                            </div>
+                          </motion.button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+              </>
+            )}
+
+            {/* AI Platform Tools */}
+            {user.serviceType === 'ai-platform' && (
+              <>
+                {/* Marketing Tools */}
+                {toolsByCategory.marketing.length > 0 && (
+                  <div className="mb-6">
+                    <h3 className="text-xs font-semibold text-white/40 uppercase tracking-wider mb-3">
+                      Marketing Intelligence
+                    </h3>
+                    <div className="space-y-2">
+                      {toolsByCategory.marketing.map(item => {
+                        const Icon = iconMap[item.icon] || Brain;
+                        const isActive = pathname === item.href;
+
+                        return (
+                          <motion.button
+                            key={item.id}
+                            onClick={() => {
+                              router.push(item.href);
+                              setSidebarOpen(false);
+                            }}
+                            whileHover={{ x: 4 }}
+                            whileTap={{ scale: 0.98 }}
+                            className={`w-full group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 ${
+                              isActive
+                                ? 'bg-purple-500/20 border border-purple-500/30 text-white shadow-lg shadow-purple-500/25'
+                                : 'text-white/70 hover:text-white hover:bg-white/10 border border-transparent hover:border-white/20'
+                            }`}
+                          >
+                            <Icon
+                              className={`w-5 h-5 ${isActive ? 'text-purple-400' : 'text-white/60 group-hover:text-white'}`}
+                            />
+                            <div className="text-left flex-1 min-w-0">
+                              <div className="font-medium truncate">
+                                {item.name}
+                              </div>
+                              <div className="text-xs text-white/50 truncate">
+                                {item.description}
+                              </div>
+                            </div>
+                          </motion.button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                {/* Content Tools */}
+                {toolsByCategory.content.length > 0 && (
+                  <div className="mb-6">
+                    <h3 className="text-xs font-semibold text-white/40 uppercase tracking-wider mb-3">
+                      Content Creation
+                    </h3>
+                    <div className="space-y-2">
+                      {toolsByCategory.content.map(item => {
+                        const Icon = iconMap[item.icon] || EditIcon;
+                        const isActive = pathname === item.href;
+
+                        return (
+                          <motion.button
+                            key={item.id}
+                            onClick={() => {
+                              router.push(item.href);
+                              setSidebarOpen(false);
+                            }}
+                            whileHover={{ x: 4 }}
+                            whileTap={{ scale: 0.98 }}
+                            className={`w-full group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 ${
+                              isActive
+                                ? 'bg-purple-500/20 border border-purple-500/30 text-white shadow-lg shadow-purple-500/25'
+                                : 'text-white/70 hover:text-white hover:bg-white/10 border border-transparent hover:border-white/20'
+                            }`}
+                          >
+                            <Icon
+                              className={`w-5 h-5 ${isActive ? 'text-purple-400' : 'text-white/60 group-hover:text-white'}`}
+                            />
+                            <div className="text-left flex-1 min-w-0">
+                              <div className="font-medium truncate">
+                                {item.name}
+                              </div>
+                              <div className="text-xs text-white/50 truncate">
+                                {item.description}
+                              </div>
+                            </div>
+                          </motion.button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                {/* Analytics Tools */}
+                {toolsByCategory.analytics.length > 0 && (
+                  <div className="mb-6">
+                    <h3 className="text-xs font-semibold text-white/40 uppercase tracking-wider mb-3">
+                      Analytics & Insights
+                    </h3>
+                    <div className="space-y-2">
+                      {toolsByCategory.analytics.map(item => {
+                        const Icon = iconMap[item.icon] || BarChart3;
+                        const isActive = pathname === item.href;
+
+                        return (
+                          <motion.button
+                            key={item.id}
+                            onClick={() => {
+                              router.push(item.href);
+                              setSidebarOpen(false);
+                            }}
+                            whileHover={{ x: 4 }}
+                            whileTap={{ scale: 0.98 }}
+                            className={`w-full group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 ${
+                              isActive
+                                ? 'bg-purple-500/20 border border-purple-500/30 text-white shadow-lg shadow-purple-500/25'
+                                : 'text-white/70 hover:text-white hover:bg-white/10 border border-transparent hover:border-white/20'
+                            }`}
+                          >
+                            <Icon
+                              className={`w-5 h-5 ${isActive ? 'text-purple-400' : 'text-white/60 group-hover:text-white'}`}
+                            />
+                            <div className="text-left flex-1 min-w-0">
+                              <div className="font-medium truncate">
+                                {item.name}
+                              </div>
+                              <div className="text-xs text-white/50 truncate">
+                                {item.description}
+                              </div>
+                            </div>
+                          </motion.button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                {/* Automation Tools */}
+                {toolsByCategory.automation.length > 0 && (
+                  <div className="mb-6">
+                    <h3 className="text-xs font-semibold text-white/40 uppercase tracking-wider mb-3">
+                      Automation
+                    </h3>
+                    <div className="space-y-2">
+                      {toolsByCategory.automation.map(item => {
+                        const Icon = iconMap[item.icon] || TrendingUp;
+                        const isActive = pathname === item.href;
+
+                        return (
+                          <motion.button
+                            key={item.id}
+                            onClick={() => {
+                              router.push(item.href);
+                              setSidebarOpen(false);
+                            }}
+                            whileHover={{ x: 4 }}
+                            whileTap={{ scale: 0.98 }}
+                            className={`w-full group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 ${
+                              isActive
+                                ? 'bg-purple-500/20 border border-purple-500/30 text-white shadow-lg shadow-purple-500/25'
+                                : 'text-white/70 hover:text-white hover:bg-white/10 border border-transparent hover:border-white/20'
+                            }`}
+                          >
+                            <Icon
+                              className={`w-5 h-5 ${isActive ? 'text-purple-400' : 'text-white/60 group-hover:text-white'}`}
+                            />
+                            <div className="text-left flex-1 min-w-0">
+                              <div className="font-medium truncate">
+                                {item.name}
+                              </div>
+                              <div className="text-xs text-white/50 truncate">
+                                {item.description}
+                              </div>
+                            </div>
+                          </motion.button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                {/* Integration Tools */}
+                {toolsByCategory.integrations.length > 0 && (
+                  <div className="mb-6">
+                    <h3 className="text-xs font-semibold text-white/40 uppercase tracking-wider mb-3">
+                      Integrations
+                    </h3>
+                    <div className="space-y-2">
+                      {toolsByCategory.integrations.map(item => {
+                        const Icon = iconMap[item.icon] || LinkIcon;
+                        const isActive = pathname === item.href;
+
+                        return (
+                          <motion.button
+                            key={item.id}
+                            onClick={() => {
+                              router.push(item.href);
+                              setSidebarOpen(false);
+                            }}
+                            whileHover={{ x: 4 }}
+                            whileTap={{ scale: 0.98 }}
+                            className={`w-full group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 ${
+                              isActive
+                                ? 'bg-purple-500/20 border border-purple-500/30 text-white shadow-lg shadow-purple-500/25'
+                                : 'text-white/70 hover:text-white hover:bg-white/10 border border-transparent hover:border-white/20'
+                            }`}
+                          >
+                            <Icon
+                              className={`w-5 h-5 ${isActive ? 'text-purple-400' : 'text-white/60 group-hover:text-white'}`}
+                            />
+                            <div className="text-left flex-1 min-w-0">
+                              <div className="font-medium truncate">
+                                {item.name}
+                              </div>
+                              <div className="text-xs text-white/50 truncate">
+                                {item.description}
+                              </div>
+                            </div>
+                          </motion.button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+              </>
+            )}
           </nav>
 
           {/* Sidebar Footer */}
@@ -346,7 +776,7 @@ export default function DashboardLayout({
             {/* Page Title */}
             <div className="flex items-center gap-4">
               <h1 className="text-xl font-bold text-white">
-                {navigation.find(item => item.href === pathname)?.name ||
+                {availableTools.find(item => item.href === pathname)?.name ||
                   'Dashboard'}
               </h1>
             </div>
@@ -364,7 +794,7 @@ export default function DashboardLayout({
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-white/40" />
                 <input
                   type="text"
-                  placeholder="Search..."
+                  placeholder="Search tools..."
                   className="pl-10 pr-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-white/40 focus:outline-none focus:border-orange-500/50 focus:ring-1 focus:ring-orange-500/20 transition-all duration-300 w-64"
                 />
               </div>

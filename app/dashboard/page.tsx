@@ -1,157 +1,50 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { motion } from 'framer-motion';
+import { authService } from '@/lib/auth-service';
+import { getToolsForUser } from '@/lib/constants/dashboard-tools';
+import { User } from '@/lib/types/auth';
 import {
-  Zap,
   MessageSquare,
+  Brain,
   BarChart3,
-  TrendingUp,
   Users,
-  Calendar,
-  Settings,
-  LogOut,
-  Bell,
-  Search,
-  Plus,
-  ArrowRight,
-  Sparkles,
+  TrendingUp,
   Target,
+  Globe,
+  Calendar,
+  Zap,
   Rocket,
   Shield,
-  Globe,
+  Star,
   Clock,
-  CheckCircle,
-  AlertCircle,
 } from 'lucide-react';
 
-interface User {
-  name: string;
-  email: string;
-  plan: string;
-  credits: number;
-  joinDate: string;
-}
-
-interface DashboardStats {
-  totalMessages: number;
-  activeChats: number;
-  responseRate: number;
-  customerSatisfaction: number;
-}
-
 export default function DashboardPage() {
-  const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
-  const [stats, setStats] = useState<DashboardStats>({
-    totalMessages: 0,
-    activeChats: 0,
-    responseRate: 0,
-    customerSatisfaction: 0,
-  });
-  const [recentActivity, setRecentActivity] = useState<any[]>([]);
-  const [quickActions, setQuickActions] = useState<any[]>([]);
+  const [availableTools, setAvailableTools] = useState<any[]>([]);
+  const router = useRouter();
 
   useEffect(() => {
-    // Check if user is logged in
-    const userData = localStorage.getItem('user');
-    if (!userData) {
-      router.push('/auth/login');
+    const currentUser = authService.getCurrentUser();
+    if (!currentUser) {
+      router.push('/auth/service-login');
       return;
     }
+    setUser(currentUser);
 
-    const userInfo = JSON.parse(userData);
-    setUser(userInfo);
-
-    // Simulate loading dashboard data
-    loadDashboardData();
+    // Get available tools for the user
+    const tools = getToolsForUser(
+      currentUser.serviceType,
+      currentUser.packageLevel
+    );
+    setAvailableTools(tools);
   }, [router]);
-
-  const loadDashboardData = async () => {
-    // Simulate API call delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
-
-    // Mock data - replace with actual API calls
-    setStats({
-      totalMessages: 0,
-      activeChats: 0,
-      responseRate: 0,
-      customerSatisfaction: 0,
-    });
-
-    setRecentActivity([
-      {
-        id: 1,
-        type: 'message',
-        title: 'New customer inquiry',
-        description: 'Sarah M. asked about pricing plans',
-        time: '2 minutes ago',
-        status: 'pending',
-      },
-      {
-        id: 2,
-        type: 'chat',
-        title: 'Chat session ended',
-        description: 'Resolved: Product compatibility question',
-        time: '15 minutes ago',
-        status: 'completed',
-      },
-      {
-        id: 3,
-        type: 'lead',
-        title: 'New lead captured',
-        description: 'Mike R. from TechCorp',
-        time: '1 hour ago',
-        status: 'new',
-      },
-    ]);
-
-    setQuickActions([
-      {
-        id: 1,
-        title: 'Start New Chat',
-        description: 'Begin a new customer conversation',
-        icon: MessageSquare,
-        action: () => router.push('/dashboard/ai-chat'),
-        color: 'from-blue-500 to-cyan-500',
-      },
-      {
-        id: 2,
-        title: 'View Analytics',
-        description: 'Check your performance metrics',
-        icon: BarChart3,
-        action: () => router.push('/dashboard/analytics'),
-        color: 'from-purple-500 to-pink-500',
-      },
-      {
-        id: 3,
-        title: 'Manage Templates',
-        description: 'Update response templates',
-        icon: Settings,
-        action: () => router.push('/dashboard/templates'),
-        color: 'from-orange-500 to-red-500',
-      },
-      {
-        id: 4,
-        title: 'Export Data',
-        description: 'Download your chat history',
-        icon: TrendingUp,
-        action: () => router.push('/dashboard/export'),
-        color: 'from-green-500 to-emerald-500',
-      },
-    ]);
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem('user');
-    localStorage.removeItem('isAuthenticated');
-    router.push('/auth/login');
-  };
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black flex items-center justify-center">
+      <div className="p-6">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-orange-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
           <p className="text-white/60">Loading your dashboard...</p>
@@ -160,276 +53,363 @@ export default function DashboardPage() {
     );
   }
 
+  const isColdDM = user.serviceType === 'colddm';
+  const isAIPlatform = user.serviceType === 'ai-platform';
+
+  // Mock data based on service type
+  const getServiceMetrics = () => {
+    if (isColdDM) {
+      return [
+        {
+          name: 'Total Messages',
+          value: '2,847',
+          change: '+12.5%',
+          icon: MessageSquare,
+          color: 'from-blue-500 to-blue-600',
+        },
+        {
+          name: 'Active Chats',
+          value: '23',
+          change: '+8.2%',
+          icon: Users,
+          color: 'from-green-500 to-green-600',
+        },
+        {
+          name: 'Response Rate',
+          value: '94.2%',
+          change: '+5.1%',
+          icon: TrendingUp,
+          color: 'from-purple-500 to-purple-600',
+        },
+        {
+          name: 'Lead Captures',
+          value: '156',
+          change: '+18.7%',
+          icon: Target,
+          color: 'from-orange-500 to-orange-600',
+        },
+      ];
+    } else {
+      return [
+        {
+          name: 'AI Queries',
+          value: '847',
+          change: '+15.3%',
+          icon: Brain,
+          color: 'from-purple-500 to-purple-600',
+        },
+        {
+          name: 'Content Generated',
+          value: '234',
+          change: '+22.1%',
+          icon: Target,
+          color: 'from-green-500 to-green-600',
+        },
+        {
+          name: 'Strategy Insights',
+          value: '89',
+          change: '+8.9%',
+          icon: TrendingUp,
+          color: 'from-blue-500 to-blue-600',
+        },
+        {
+          name: 'Campaign ROI',
+          value: '312%',
+          change: '+45.2%',
+          icon: BarChart3,
+          color: 'from-orange-500 to-orange-600',
+        },
+      ];
+    }
+  };
+
+  const getQuickActions = () => {
+    if (isColdDM) {
+      return [
+        {
+          name: 'View Chat Analytics',
+          description: 'Monitor chatbot performance',
+          icon: BarChart3,
+          href: '/dashboard/chatbot/analytics',
+          color: 'from-blue-500 to-blue-600',
+        },
+        {
+          name: 'Manage Templates',
+          description: 'Update AI response templates',
+          icon: Target,
+          href: '/dashboard/chatbot/templates',
+          color: 'from-green-500 to-green-600',
+        },
+        {
+          name: 'Social Integrations',
+          description: 'Connect social media accounts',
+          icon: Globe,
+          href: '/dashboard/chatbot/integrations',
+          color: 'from-purple-500 to-purple-600',
+        },
+        {
+          name: 'Lead Management',
+          description: 'View captured leads',
+          icon: Users,
+          href: '/dashboard/chatbot/leads',
+          color: 'from-orange-500 to-orange-600',
+        },
+      ];
+    } else {
+      return [
+        {
+          name: 'AI Marketing Insights',
+          description: 'Get AI-powered recommendations',
+          icon: Brain,
+          href: '/dashboard/ai-insights',
+          color: 'from-purple-500 to-purple-600',
+        },
+        {
+          name: 'Content Generator',
+          description: 'Create AI-enhanced content',
+          icon: Target,
+          href: '/dashboard/content-generator',
+          color: 'from-green-500 to-green-600',
+        },
+        {
+          name: 'Strategy Planner',
+          description: 'Develop marketing strategies',
+          icon: TrendingUp,
+          href: '/dashboard/strategy-planner',
+          color: 'from-blue-500 to-blue-600',
+        },
+        {
+          name: 'Campaign Optimizer',
+          description: 'Optimize campaign performance',
+          icon: BarChart3,
+          href: '/dashboard/campaign-optimizer',
+          color: 'from-orange-500 to-orange-600',
+        },
+      ];
+    }
+  };
+
+  const getRecentActivity = () => {
+    if (isColdDM) {
+      return [
+        {
+          action: 'New customer inquiry',
+          time: '2 minutes ago',
+          type: 'chat',
+          status: 'pending',
+        },
+        {
+          action: 'Chat session completed',
+          time: '15 minutes ago',
+          type: 'chat',
+          status: 'completed',
+        },
+        {
+          action: 'New lead captured',
+          time: '1 hour ago',
+          type: 'lead',
+          status: 'new',
+        },
+        {
+          action: 'Template updated',
+          time: '2 hours ago',
+          type: 'template',
+          status: 'updated',
+        },
+      ];
+    } else {
+      return [
+        {
+          action: 'AI strategy generated',
+          time: '5 minutes ago',
+          type: 'strategy',
+          status: 'completed',
+        },
+        {
+          action: 'Content created',
+          time: '25 minutes ago',
+          type: 'content',
+          status: 'completed',
+        },
+        {
+          action: 'Campaign optimized',
+          time: '1 hour ago',
+          type: 'campaign',
+          status: 'optimized',
+        },
+        {
+          action: 'Insights report ready',
+          time: '2 hours ago',
+          type: 'insights',
+          status: 'ready',
+        },
+      ];
+    }
+  };
+
+  const metrics = getServiceMetrics();
+  const quickActions = getQuickActions();
+  const recentActivity = getRecentActivity();
+
   return (
-    <div className="w-full h-full">
-      {/* Main Content */}
-      <div className="px-6 py-8 max-w-7xl mx-auto">
-        {/* Welcome Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-8"
-        >
-          <div className="bg-gradient-to-r from-orange-500/10 to-orange-600/10 border border-orange-500/20 rounded-2xl p-6 backdrop-blur-sm">
-            <div className="flex items-center gap-4">
-              <div className="w-16 h-16 bg-gradient-to-r from-orange-500 to-orange-600 rounded-2xl flex items-center justify-center">
-                <Sparkles className="w-8 h-8 text-white" />
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold text-white mb-2">
-                  Welcome back, {user.name}! 👋
-                </h1>
-                <p className="text-white/80">
-                  Your AI marketing platform is ready to help you scale. You
-                  have{' '}
-                  <span className="text-orange-400 font-semibold">
-                    {user.credits}
-                  </span>{' '}
-                  credits remaining.
-                </p>
-              </div>
-            </div>
-          </div>
-        </motion.div>
+    <div className="p-6 space-y-6">
+      {/* Welcome Header */}
+      <div className="text-center mb-8">
+        <h1 className="text-3xl font-bold text-white mb-2">
+          Welcome back, {user.name}! 👋
+        </h1>
+        <p className="text-xl text-white/60 max-w-2xl mx-auto">
+          {isColdDM
+            ? `Your AI chatbot is actively serving customers and capturing leads. You're on the ${user.packageLevel} plan with advanced automation capabilities.`
+            : `Your AI marketing platform is ready to transform your business. You're on the ${user.packageLevel} plan with cutting-edge AI intelligence.`}
+        </p>
+      </div>
 
-        {/* Stats Grid */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8"
-        >
-          {/* Total Messages */}
-          <div className="bg-white/5 border border-white/10 rounded-2xl p-6 backdrop-blur-sm hover:border-orange-500/30 transition-all duration-300 group">
-            <div className="flex items-center justify-between mb-4">
-              <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center">
-                <MessageSquare className="w-6 h-6 text-white" />
+      {/* Key Metrics */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {metrics.map((metric, index) => {
+          const Icon = metric.icon;
+          return (
+            <div
+              key={index}
+              className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl p-6 hover:border-white/20 transition-all duration-300"
+            >
+              <div className="flex items-center justify-between mb-4">
+                <div
+                  className={`w-12 h-12 bg-gradient-to-r ${metric.color} rounded-xl flex items-center justify-center`}
+                >
+                  <Icon className="w-6 h-6 text-white" />
+                </div>
+                <span className="text-sm font-medium text-green-400">
+                  {metric.change}
+                </span>
               </div>
-              <TrendingUp className="w-5 h-5 text-green-400" />
+              <h3 className="text-white/60 text-sm font-medium mb-1">
+                {metric.name}
+              </h3>
+              <p className="text-2xl font-bold text-white">{metric.value}</p>
             </div>
-            <h3 className="text-2xl font-bold text-white mb-1">
-              {stats.totalMessages.toLocaleString()}
-            </h3>
-            <p className="text-white/60 text-sm">Total Messages</p>
-          </div>
+          );
+        })}
+      </div>
 
-          {/* Active Chats */}
-          <div className="bg-white/5 border border-white/10 rounded-2xl p-6 backdrop-blur-sm hover:border-orange-500/30 transition-all duration-300 group">
-            <div className="flex items-center justify-between mb-4">
-              <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl flex items-center justify-center">
-                <Users className="w-6 h-6 text-white" />
-              </div>
-              <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
-            </div>
-            <h3 className="text-2xl font-bold text-white mb-1">
-              {stats.activeChats}
-            </h3>
-            <p className="text-white/60 text-sm">Active Chats</p>
-          </div>
-
-          {/* Response Rate */}
-          <div className="bg-white/5 border border-white/10 rounded-2xl p-6 backdrop-blur-sm hover:border-orange-500/30 transition-all duration-300 group">
-            <div className="flex items-center justify-between mb-4">
-              <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-emerald-500 rounded-xl flex items-center justify-center">
-                <Target className="w-6 h-6 text-white" />
-              </div>
-              <CheckCircle className="w-5 h-5 text-green-400" />
-            </div>
-            <h3 className="text-2xl font-bold text-white mb-1">
-              {stats.responseRate}%
-            </h3>
-            <p className="text-white/60 text-sm">Response Rate</p>
-          </div>
-
-          {/* Customer Satisfaction */}
-          <div className="bg-white/5 border border-white/10 rounded-2xl p-6 backdrop-blur-sm hover:border-orange-500/30 transition-all duration-300 group">
-            <div className="flex items-center justify-between mb-4">
-              <div className="w-12 h-12 bg-gradient-to-r from-orange-500 to-red-500 rounded-xl flex items-center justify-center">
-                <BarChart3 className="w-6 h-6 text-white" />
-              </div>
-              <div className="flex items-center gap-1">
-                {[...Array(5)].map((_, i) => (
-                  <div
-                    key={i}
-                    className={`w-2 h-2 rounded-full ${
-                      i < Math.floor(stats.customerSatisfaction)
-                        ? 'bg-yellow-400'
-                        : 'bg-white/20'
-                    }`}
-                  />
-                ))}
-              </div>
-            </div>
-            <h3 className="text-2xl font-bold text-white mb-1">
-              {stats.customerSatisfaction}
-            </h3>
-            <p className="text-white/60 text-sm">Customer Rating</p>
-          </div>
-        </motion.div>
-
-        {/* Quick Actions & Recent Activity */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-          {/* Quick Actions */}
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.2 }}
-          >
-            <h2 className="text-xl font-semibold text-white mb-6 flex items-center gap-2">
-              <Rocket className="w-5 h-5 text-orange-400" />
-              Quick Actions
-            </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {quickActions.map(action => (
-                <motion.button
-                  key={action.id}
-                  onClick={action.action}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="group bg-white/5 border border-white/10 rounded-xl p-4 text-left hover:border-orange-500/30 transition-all duration-300 backdrop-blur-sm"
+      {/* Quick Actions */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl p-6">
+          <h3 className="text-lg font-semibold text-white mb-6 flex items-center gap-2">
+            <Zap className="w-5 h-5 text-orange-400" />
+            Quick Actions
+          </h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {quickActions.map((action, index) => {
+              const Icon = action.icon;
+              return (
+                <button
+                  key={index}
+                  onClick={() => router.push(action.href)}
+                  className="group text-left p-4 bg-white/5 hover:bg-white/10 rounded-lg transition-all duration-300 hover:scale-105 border border-white/10 hover:border-white/20"
                 >
                   <div
                     className={`w-10 h-10 bg-gradient-to-r ${action.color} rounded-lg flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-300`}
                   >
-                    <action.icon className="w-5 h-5 text-white" />
+                    <Icon className="w-5 h-5 text-white" />
                   </div>
-                  <h3 className="font-semibold text-white mb-1">
-                    {action.title}
-                  </h3>
-                  <p className="text-white/60 text-sm">{action.description}</p>
-                  <ArrowRight className="w-4 h-4 text-white/40 group-hover:text-orange-400 group-hover:translate-x-1 transition-all duration-300 mt-2" />
-                </motion.button>
-              ))}
-            </div>
-          </motion.div>
-
-          {/* Recent Activity */}
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.3 }}
-          >
-            <h2 className="text-xl font-semibold text-white mb-6 flex items-center gap-2">
-              <Clock className="w-5 h-5 text-orange-400" />
-              Recent Activity
-            </h2>
-            <div className="space-y-3">
-              {recentActivity.map(activity => (
-                <motion.div
-                  key={activity.id}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="bg-white/5 border border-white/10 rounded-xl p-4 backdrop-blur-sm hover:border-orange-500/30 transition-all duration-300"
-                >
-                  <div className="flex items-start gap-3">
-                    <div
-                      className={`w-8 h-8 rounded-lg flex items-center justify-center ${
-                        activity.type === 'message'
-                          ? 'bg-blue-500/20 text-blue-400'
-                          : activity.type === 'chat'
-                            ? 'bg-green-500/20 text-green-400'
-                            : 'bg-purple-500/20 text-purple-400'
-                      }`}
-                    >
-                      {activity.type === 'message' && (
-                        <MessageSquare className="w-4 h-4" />
-                      )}
-                      {activity.type === 'chat' && (
-                        <Users className="w-4 h-4" />
-                      )}
-                      {activity.type === 'lead' && (
-                        <Target className="w-4 h-4" />
-                      )}
-                    </div>
-                    <div className="flex-1">
-                      <h4 className="font-medium text-white mb-1">
-                        {activity.title}
-                      </h4>
-                      <p className="text-white/60 text-sm mb-2">
-                        {activity.description}
-                      </p>
-                      <div className="flex items-center justify-between">
-                        <span className="text-white/40 text-xs">
-                          {activity.time}
-                        </span>
-                        <span
-                          className={`px-2 py-1 rounded-full text-xs font-medium ${
-                            activity.status === 'pending'
-                              ? 'bg-yellow-500/20 text-yellow-400'
-                              : activity.status === 'completed'
-                                ? 'bg-green-500/20 text-green-400'
-                                : 'bg-blue-500/20 text-blue-400'
-                          }`}
-                        >
-                          {activity.status}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
+                  <h4 className="font-semibold text-white text-sm mb-1">
+                    {action.name}
+                  </h4>
+                  <p className="text-white/60 text-xs">{action.description}</p>
+                </button>
+              );
+            })}
+          </div>
         </div>
 
-        {/* AI Insights Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-          className="bg-gradient-to-r from-orange-500/5 to-purple-500/5 border border-orange-500/20 rounded-2xl p-6 backdrop-blur-sm"
-        >
-          <div className="flex items-center gap-4 mb-4">
-            <div className="w-12 h-12 bg-gradient-to-r from-orange-500 to-purple-500 rounded-xl flex items-center justify-center">
-              <Shield className="w-6 h-6 text-white" />
-            </div>
-            <div>
-              <h2 className="text-xl font-semibold text-white">AI Insights</h2>
-              <p className="text-white/60">
-                Your AI assistant has some recommendations
-              </p>
-            </div>
+        {/* Recent Activity */}
+        <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl p-6">
+          <h3 className="text-lg font-semibold text-white mb-6 flex items-center gap-2">
+            <Clock className="w-5 h-5 text-orange-400" />
+            Recent Activity
+          </h3>
+          <div className="space-y-4">
+            {recentActivity.map((activity, index) => (
+              <div
+                key={index}
+                className="flex items-center gap-4 p-3 bg-white/5 rounded-lg"
+              >
+                <div
+                  className={`w-2 h-2 rounded-full ${
+                    activity.status === 'completed'
+                      ? 'bg-green-500'
+                      : activity.status === 'pending'
+                        ? 'bg-yellow-500'
+                        : activity.status === 'new'
+                          ? 'bg-blue-500'
+                          : activity.status === 'updated'
+                            ? 'bg-purple-500'
+                            : activity.status === 'optimized'
+                              ? 'bg-orange-500'
+                              : 'bg-gray-500'
+                  }`}
+                />
+                <span className="text-white/80 flex-1 text-sm">
+                  {activity.action}
+                </span>
+                <span className="text-white/40 text-xs">{activity.time}</span>
+              </div>
+            ))}
           </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="bg-white/5 border border-white/10 rounded-xl p-4">
-              <div className="flex items-center gap-2 mb-2">
-                <CheckCircle className="w-4 h-4 text-green-400" />
-                <span className="text-sm font-medium text-white">
-                  Response Time
-                </span>
-              </div>
-              <p className="text-white/80 text-sm">
-                Your average response time is 2.3 minutes - excellent!
-              </p>
-            </div>
-
-            <div className="bg-white/5 border border-white/10 rounded-xl p-4">
-              <div className="flex items-center gap-2 mb-2">
-                <AlertCircle className="w-4 h-4 text-yellow-400" />
-                <span className="text-sm font-medium text-white">
-                  Template Update
-                </span>
-              </div>
-              <p className="text-white/80 text-sm">
-                Consider updating your FAQ templates for better accuracy
-              </p>
-            </div>
-
-            <div className="bg-white/5 border border-white/10 rounded-xl p-4">
-              <div className="flex items-center gap-2 mb-2">
-                <TrendingUp className="w-4 h-4 text-blue-400" />
-                <span className="text-sm font-medium text-white">
-                  Growth Opportunity
-                </span>
-              </div>
-              <p className="text-white/80 text-sm">
-                Peak hours are 2-4 PM - consider scheduling campaigns then
-              </p>
-            </div>
-          </div>
-        </motion.div>
+        </div>
       </div>
+
+      {/* Service-Specific Features */}
+      <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl p-6">
+        <h3 className="text-lg font-semibold text-white mb-6 flex items-center gap-2">
+          <Star className="w-5 h-5 text-orange-400" />
+          {isColdDM ? 'ColdDM Features' : 'AI Platform Features'}
+        </h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {availableTools.slice(0, 6).map((tool, index) => (
+            <div
+              key={tool.id}
+              className="p-4 bg-white/5 rounded-lg border border-white/10 hover:border-white/20 transition-all duration-300"
+            >
+              <div className="flex items-center gap-3 mb-2">
+                <div
+                  className={`w-8 h-8 bg-gradient-to-r ${
+                    isColdDM
+                      ? 'from-blue-500 to-blue-600'
+                      : 'from-purple-500 to-purple-600'
+                  } rounded-lg flex items-center justify-center`}
+                >
+                  <span className="text-white text-sm">✨</span>
+                </div>
+                <h4 className="font-medium text-white text-sm">{tool.name}</h4>
+              </div>
+              <p className="text-white/60 text-xs">{tool.description}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Upgrade CTA */}
+      {user.packageLevel !== 'enterprise' && (
+        <div className="bg-gradient-to-r from-orange-500/10 to-purple-500/10 border border-orange-500/20 rounded-xl p-6 text-center">
+          <h3 className="text-lg font-semibold text-white mb-2">
+            Unlock More Features
+          </h3>
+          <p className="text-white/60 mb-4">
+            {isColdDM
+              ? 'Upgrade your ColdDM plan to access advanced analytics, unlimited integrations, and multi-client management.'
+              : 'Upgrade your AI platform plan to access custom AI training, white-label options, and on-premise deployment.'}
+          </p>
+          <button
+            onClick={() => router.push('/pricing')}
+            className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-semibold px-6 py-3 rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+          >
+            View Upgrade Options
+          </button>
+        </div>
+      )}
     </div>
   );
 }
