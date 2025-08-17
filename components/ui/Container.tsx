@@ -1,16 +1,16 @@
-import React from 'react'
-import { cn } from '@/lib/utils'
+import React from 'react';
+import { cn } from '@/lib/utils';
 
 interface ContainerProps {
-  children: React.ReactNode
-  className?: string
-  maxWidth?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '7xl'
+  children: React.ReactNode;
+  className?: string;
+  maxWidth?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '7xl';
 }
 
-export const Container: React.FC<ContainerProps> = ({ 
-  children, 
+export const Container: React.FC<ContainerProps> = ({
+  children,
   className,
-  maxWidth = '7xl'
+  maxWidth = '7xl',
 }) => {
   const maxWidthClasses = {
     sm: 'max-w-screen-sm',
@@ -18,16 +18,18 @@ export const Container: React.FC<ContainerProps> = ({
     lg: 'max-w-screen-lg',
     xl: 'max-w-screen-xl',
     '2xl': 'max-w-screen-2xl',
-    '7xl': 'max-w-7xl'
-  }
+    '7xl': 'max-w-7xl',
+  };
 
   return (
-    <div className={cn(
-      'mx-auto px-4 md:px-8',
-      maxWidthClasses[maxWidth],
-      className
-    )}>
+    <div
+      className={cn(
+        'mx-auto px-4 md:px-8',
+        maxWidthClasses[maxWidth],
+        className
+      )}
+    >
       {children}
     </div>
-  )
-}
+  );
+};

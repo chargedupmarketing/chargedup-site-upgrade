@@ -70,24 +70,24 @@ export const designTokens = {
     '2xl': '1rem',
     '3xl': '1.5rem',
   },
-} as const
+} as const;
 
 // Utility functions
 export const getSpacing = (size: keyof typeof designTokens.spacing.section) => {
-  return designTokens.spacing.section[size]
-}
+  return designTokens.spacing.section[size];
+};
 
 export const getColor = (color: string) => {
-  const keys = color.split('.')
-  let result: any = designTokens.colors
-  
+  const keys = color.split('.');
+  let result: any = designTokens.colors;
+
   for (const key of keys) {
     if (result && typeof result === 'object' && key in result) {
-      result = result[key]
+      result = result[key];
     } else {
-      return undefined
+      return undefined;
     }
   }
-  
-  return result
-}
+
+  return result;
+};

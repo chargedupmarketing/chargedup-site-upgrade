@@ -1,47 +1,59 @@
-'use client'
+'use client';
 
-import { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
-import { User, Shield, CreditCard, MessageSquare, Video, Settings, Check, AlertCircle } from 'lucide-react'
+import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import {
+  User,
+  Shield,
+  CreditCard,
+  MessageSquare,
+  Video,
+  Settings,
+  Check,
+  AlertCircle,
+} from 'lucide-react';
 
 export default function ProfilePage() {
-  const [user, setUser] = useState<any>(null)
-  const [isEditing, setIsEditing] = useState(false)
+  const [user, setUser] = useState<any>(null);
+  const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     currentPassword: '',
     newPassword: '',
-    confirmPassword: ''
-  })
-  const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
-  const [isLoading, setIsLoading] = useState(false)
+    confirmPassword: '',
+  });
+  const [message, setMessage] = useState<{
+    type: 'success' | 'error';
+    text: string;
+  } | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     // Get user data from localStorage
-    const userData = localStorage.getItem('user')
+    const userData = localStorage.getItem('user');
     if (userData) {
-      const user = JSON.parse(userData)
-      setUser(user)
-      setFormData(prev => ({ ...prev, name: user.name, email: user.email }))
+      const user = JSON.parse(userData);
+      setUser(user);
+      setFormData(prev => ({ ...prev, name: user.name, email: user.email }));
     }
-  }, [])
+  }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData(prev => ({
       ...prev,
-      [e.target.name]: e.target.value
-    }))
-  }
+      [e.target.name]: e.target.value,
+    }));
+  };
 
   const handleSaveProfile = async () => {
     if (!formData.name.trim()) {
-      setMessage({ type: 'error', text: 'Name is required' })
-      return
+      setMessage({ type: 'error', text: 'Name is required' });
+      return;
     }
 
-    setIsLoading(true)
-    
+    setIsLoading(true);
+
     try {
       // TODO: Replace with actual API call
       // const response = await fetch('/api/user/profile', {
@@ -49,42 +61,52 @@ export default function ProfilePage() {
       //   headers: { 'Content-Type': 'application/json' },
       //   body: JSON.stringify({ name: formData.name })
       // })
-      
+
       // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
       // Update local user data
-      const updatedUser = { ...user, name: formData.name }
-      localStorage.setItem('user', JSON.stringify(updatedUser))
-      setUser(updatedUser)
-      
-      setMessage({ type: 'success', text: 'Profile updated successfully!' })
-      setIsEditing(false)
+      const updatedUser = { ...user, name: formData.name };
+      localStorage.setItem('user', JSON.stringify(updatedUser));
+      setUser(updatedUser);
+
+      setMessage({ type: 'success', text: 'Profile updated successfully!' });
+      setIsEditing(false);
     } catch (error) {
-      setMessage({ type: 'error', text: 'Failed to update profile. Please try again.' })
+      setMessage({
+        type: 'error',
+        text: 'Failed to update profile. Please try again.',
+      });
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   const handleChangePassword = async () => {
-    if (!formData.currentPassword || !formData.newPassword || !formData.confirmPassword) {
-      setMessage({ type: 'error', text: 'All password fields are required' })
-      return
+    if (
+      !formData.currentPassword ||
+      !formData.newPassword ||
+      !formData.confirmPassword
+    ) {
+      setMessage({ type: 'error', text: 'All password fields are required' });
+      return;
     }
 
     if (formData.newPassword !== formData.confirmPassword) {
-      setMessage({ type: 'error', text: 'New passwords do not match' })
-      return
+      setMessage({ type: 'error', text: 'New passwords do not match' });
+      return;
     }
 
     if (formData.newPassword.length < 6) {
-      setMessage({ type: 'error', text: 'New password must be at least 6 characters' })
-      return
+      setMessage({
+        type: 'error',
+        text: 'New password must be at least 6 characters',
+      });
+      return;
     }
 
-    setIsLoading(true)
-    
+    setIsLoading(true);
+
     try {
       // TODO: Replace with actual API call
       // const response = await fetch('/api/user/profile', {
@@ -95,23 +117,26 @@ export default function ProfilePage() {
       //     newPassword: formData.newPassword
       //   })
       // })
-      
+
       // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      
-      setMessage({ type: 'success', text: 'Password changed successfully!' })
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      setMessage({ type: 'success', text: 'Password changed successfully!' });
       setFormData(prev => ({
         ...prev,
         currentPassword: '',
         newPassword: '',
-        confirmPassword: ''
-      }))
+        confirmPassword: '',
+      }));
     } catch (error) {
-      setMessage({ type: 'error', text: 'Failed to change password. Please check your current password.' })
+      setMessage({
+        type: 'error',
+        text: 'Failed to change password. Please check your current password.',
+      });
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   if (!user) {
     return (
@@ -121,7 +146,7 @@ export default function ProfilePage() {
           <p className="text-white text-lg">Loading...</p>
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -137,7 +162,9 @@ export default function ProfilePage() {
             <User className="w-4 h-4" />
             Profile Settings
           </div>
-          <h1 className="text-3xl font-bold text-white mb-4">Manage Your Account</h1>
+          <h1 className="text-3xl font-bold text-white mb-4">
+            Manage Your Account
+          </h1>
           <p className="text-gray-400 text-lg">
             Update your profile information and manage your account settings
           </p>
@@ -154,7 +181,9 @@ export default function ProfilePage() {
             {/* Basic Info */}
             <div className="bg-gray-800/50 rounded-2xl p-6 border border-gray-700/50">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-semibold text-white">Basic Information</h2>
+                <h2 className="text-xl font-semibold text-white">
+                  Basic Information
+                </h2>
                 {!isEditing && (
                   <button
                     onClick={() => setIsEditing(true)}
@@ -191,7 +220,9 @@ export default function ProfilePage() {
                     disabled
                     className="w-full bg-gray-700/50 border border-gray-600/50 rounded-xl px-4 py-3 text-white opacity-50 cursor-not-allowed"
                   />
-                  <p className="text-gray-500 text-sm mt-1">Email cannot be changed</p>
+                  <p className="text-gray-500 text-sm mt-1">
+                    Email cannot be changed
+                  </p>
                 </div>
 
                 {isEditing && (
@@ -215,8 +246,8 @@ export default function ProfilePage() {
                     </button>
                     <button
                       onClick={() => {
-                        setIsEditing(false)
-                        setFormData(prev => ({ ...prev, name: user.name }))
+                        setIsEditing(false);
+                        setFormData(prev => ({ ...prev, name: user.name }));
                       }}
                       className="px-6 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg font-medium transition-colors"
                     >
@@ -229,8 +260,10 @@ export default function ProfilePage() {
 
             {/* Change Password */}
             <div className="bg-gray-800/50 rounded-2xl p-6 border border-gray-700/50">
-              <h2 className="text-xl font-semibold text-white mb-6">Change Password</h2>
-              
+              <h2 className="text-xl font-semibold text-white mb-6">
+                Change Password
+              </h2>
+
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-300 mb-2">
@@ -276,7 +309,12 @@ export default function ProfilePage() {
 
                 <button
                   onClick={handleChangePassword}
-                  disabled={isLoading || !formData.currentPassword || !formData.newPassword || !formData.confirmPassword}
+                  disabled={
+                    isLoading ||
+                    !formData.currentPassword ||
+                    !formData.newPassword ||
+                    !formData.confirmPassword
+                  }
                   className="w-full px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 disabled:from-gray-600 disabled:to-gray-700 text-white rounded-lg font-medium transition-all duration-200 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
                   {isLoading ? (
@@ -330,7 +368,9 @@ export default function ProfilePage() {
                 <div className="w-20 h-20 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4">
                   <User className="w-10 h-10 text-white" />
                 </div>
-                <h3 className="text-xl font-bold text-white mb-2">{user.name}</h3>
+                <h3 className="text-xl font-bold text-white mb-2">
+                  {user.name}
+                </h3>
                 <p className="text-gray-400 mb-4">{user.email}</p>
                 <div className="inline-flex items-center gap-2 bg-gray-700/50 px-3 py-1 rounded-full">
                   <Shield className="w-4 h-4 text-purple-400" />
@@ -341,17 +381,21 @@ export default function ProfilePage() {
 
             {/* Usage Stats */}
             <div className="bg-gray-800/50 rounded-2xl p-6 border border-gray-700/50">
-              <h3 className="text-lg font-semibold text-white mb-4">Usage Statistics</h3>
-              
+              <h3 className="text-lg font-semibold text-white mb-4">
+                Usage Statistics
+              </h3>
+
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <CreditCard className="w-5 h-5 text-orange-400" />
                     <span className="text-gray-300">Credits</span>
                   </div>
-                  <span className="text-white font-semibold">{user.credits}</span>
+                  <span className="text-white font-semibold">
+                    {user.credits}
+                  </span>
                 </div>
-                
+
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <MessageSquare className="w-5 h-5 text-blue-400" />
@@ -359,7 +403,7 @@ export default function ProfilePage() {
                   </div>
                   <span className="text-white font-semibold">12</span>
                 </div>
-                
+
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <Video className="w-5 h-5 text-green-400" />
@@ -372,8 +416,10 @@ export default function ProfilePage() {
 
             {/* Quick Actions */}
             <div className="bg-gray-800/50 rounded-2xl p-6 border border-gray-700/50">
-              <h3 className="text-lg font-semibold text-white mb-4">Quick Actions</h3>
-              
+              <h3 className="text-lg font-semibold text-white mb-4">
+                Quick Actions
+              </h3>
+
               <div className="space-y-3">
                 <button className="w-full text-left p-3 bg-gray-700/50 hover:bg-gray-600/50 rounded-lg transition-colors">
                   <div className="flex items-center gap-3">
@@ -381,14 +427,14 @@ export default function ProfilePage() {
                     <span className="text-gray-300">Account Settings</span>
                   </div>
                 </button>
-                
+
                 <button className="w-full text-left p-3 bg-gray-700/50 hover:bg-gray-600/50 rounded-lg transition-colors">
                   <div className="flex items-center gap-3">
                     <Shield className="w-5 h-5 text-gray-400" />
                     <span className="text-gray-300">Privacy & Security</span>
                   </div>
                 </button>
-                
+
                 <button className="w-full text-left p-3 bg-gray-700/50 hover:bg-gray-600/50 rounded-lg transition-colors">
                   <div className="flex items-center gap-3">
                     <CreditCard className="w-5 h-5 text-gray-400" />
@@ -401,5 +447,5 @@ export default function ProfilePage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

@@ -1,44 +1,53 @@
-'use client'
+'use client';
 
-import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
-import { motion } from 'framer-motion'
-import { Send, Plus, Trash2, MessageSquare, Loader2, Copy, Check, LogOut } from 'lucide-react'
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { motion } from 'framer-motion';
+import {
+  Send,
+  Plus,
+  Trash2,
+  MessageSquare,
+  Loader2,
+  Copy,
+  Check,
+  LogOut,
+} from 'lucide-react';
 
 interface Message {
-  id: string
-  content: string
-  role: 'user' | 'assistant'
-  createdAt: Date
+  id: string;
+  content: string;
+  role: 'user' | 'assistant';
+  createdAt: Date;
 }
 
 interface Chat {
-  id: string
-  title: string
-  messages: Message[]
-  createdAt: Date
-  updatedAt: Date
+  id: string;
+  title: string;
+  messages: Message[];
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export default function SimpleDashboardPage() {
-  const router = useRouter()
-  const [user, setUser] = useState<any>(null)
-  const [chats, setChats] = useState<Chat[]>([])
-  const [currentChat, setCurrentChat] = useState<Chat | null>(null)
-  const [inputValue, setInputValue] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
-  const [copiedId, setCopiedId] = useState<string | null>(null)
+  const router = useRouter();
+  const [user, setUser] = useState<any>(null);
+  const [chats, setChats] = useState<Chat[]>([]);
+  const [currentChat, setCurrentChat] = useState<Chat | null>(null);
+  const [inputValue, setInputValue] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [copiedId, setCopiedId] = useState<string | null>(null);
 
   useEffect(() => {
     // Check if user is logged in
-    const userData = localStorage.getItem('user')
+    const userData = localStorage.getItem('user');
     if (!userData) {
-      router.push('/auth/login')
-      return
+      router.push('/auth/login');
+      return;
     }
-    
-    setUser(JSON.parse(userData))
-    
+
+    setUser(JSON.parse(userData));
+
     // Create a default chat
     const defaultChat: Chat = {
       id: 'default',
@@ -48,16 +57,16 @@ export default function SimpleDashboardPage() {
           id: '1',
           content: `Hello ${JSON.parse(userData).name}! Welcome to ChargedUp AI Platform. How can I help you today?`,
           role: 'assistant',
-          createdAt: new Date()
-        }
+          createdAt: new Date(),
+        },
       ],
       createdAt: new Date(),
-      updatedAt: new Date()
-    }
-    
-    setChats([defaultChat])
-    setCurrentChat(defaultChat)
-  }, [router])
+      updatedAt: new Date(),
+    };
+
+    setChats([defaultChat]);
+    setCurrentChat(defaultChat);
+  }, [router]);
 
   const createNewChat = () => {
     const newChat: Chat = {
@@ -65,45 +74,45 @@ export default function SimpleDashboardPage() {
       title: 'New Chat',
       messages: [],
       createdAt: new Date(),
-      updatedAt: new Date()
-    }
-    setChats(prev => [newChat, ...prev])
-    setCurrentChat(newChat)
-  }
+      updatedAt: new Date(),
+    };
+    setChats(prev => [newChat, ...prev]);
+    setCurrentChat(newChat);
+  };
 
   const deleteChat = (chatId: string) => {
-    if (chats.length <= 1) return // Keep at least one chat
-    
-    setChats(prev => prev.filter(chat => chat.id !== chatId))
+    if (chats.length <= 1) return; // Keep at least one chat
+
+    setChats(prev => prev.filter(chat => chat.id !== chatId));
     if (currentChat?.id === chatId) {
-      setCurrentChat(chats.length > 1 ? chats[1] : null)
+      setCurrentChat(chats.length > 1 ? chats[1] : null);
     }
-  }
+  };
 
   const sendMessage = async (content: string) => {
-    if (!content.trim() || isLoading || !currentChat) return
+    if (!content.trim() || isLoading || !currentChat) return;
 
     const userMessage: Message = {
       id: `msg-${Date.now()}`,
       content: content.trim(),
       role: 'user',
-      createdAt: new Date()
-    }
+      createdAt: new Date(),
+    };
 
     // Update current chat with user message
     const updatedChat = {
       ...currentChat,
       messages: [...currentChat.messages, userMessage],
-      updatedAt: new Date()
-    }
-    
-    setCurrentChat(updatedChat)
-    setChats(prev => prev.map(chat => 
-      chat.id === currentChat.id ? updatedChat : chat
-    ))
-    
-    setInputValue('')
-    setIsLoading(true)
+      updatedAt: new Date(),
+    };
+
+    setCurrentChat(updatedChat);
+    setChats(prev =>
+      prev.map(chat => (chat.id === currentChat.id ? updatedChat : chat))
+    );
+
+    setInputValue('');
+    setIsLoading(true);
 
     try {
       // Simulate AI response for now
@@ -112,44 +121,48 @@ export default function SimpleDashboardPage() {
           id: `ai-${Date.now()}`,
           content: `I received your message: "${content.trim()}". This is a demo response. In the full version, this would connect to OpenAI's API.`,
           role: 'assistant',
-          createdAt: new Date()
-        }
+          createdAt: new Date(),
+        };
 
         const finalChat = {
           ...updatedChat,
           messages: [...updatedChat.messages, aiMessage],
-          updatedAt: new Date()
-        }
-        
-        setCurrentChat(finalChat)
-        setChats(prev => prev.map(chat => 
-          chat.id === currentChat.id ? finalChat : chat
-        ))
-        setIsLoading(false)
-      }, 1000)
+          updatedAt: new Date(),
+        };
+
+        setCurrentChat(finalChat);
+        setChats(prev =>
+          prev.map(chat => (chat.id === currentChat.id ? finalChat : chat))
+        );
+        setIsLoading(false);
+      }, 1000);
     } catch (error) {
-      console.error('Failed to send message:', error)
-      setIsLoading(false)
+      console.error('Failed to send message:', error);
+      setIsLoading(false);
     }
-  }
+  };
 
   const copyMessage = async (content: string, messageId: string) => {
     try {
-      await navigator.clipboard.writeText(content)
-      setCopiedId(messageId)
-      setTimeout(() => setCopiedId(null), 2000)
+      await navigator.clipboard.writeText(content);
+      setCopiedId(messageId);
+      setTimeout(() => setCopiedId(null), 2000);
     } catch (error) {
-      console.error('Failed to copy message:', error)
+      console.error('Failed to copy message:', error);
     }
-  }
+  };
 
   const handleLogout = () => {
-    localStorage.removeItem('user')
-    router.push('/auth/login')
-  }
+    localStorage.removeItem('user');
+    router.push('/auth/login');
+  };
 
   if (!user) {
-    return <div className="flex items-center justify-center min-h-screen">Loading...</div>
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        Loading...
+      </div>
+    );
   }
 
   return (
@@ -183,13 +196,15 @@ export default function SimpleDashboardPage() {
             <Plus className="w-4 h-4" />
             New Chat
           </button>
-          
+
           <div className="space-y-2">
-            {chats.map((chat) => (
+            {chats.map(chat => (
               <div
                 key={chat.id}
                 className={`flex items-center justify-between p-3 rounded-lg cursor-pointer transition-colors ${
-                  currentChat?.id === chat.id ? 'bg-gray-700' : 'hover:bg-gray-700'
+                  currentChat?.id === chat.id
+                    ? 'bg-gray-700'
+                    : 'hover:bg-gray-700'
                 }`}
                 onClick={() => setCurrentChat(chat)}
               >
@@ -199,9 +214,9 @@ export default function SimpleDashboardPage() {
                 </div>
                 {chats.length > 1 && (
                   <button
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      deleteChat(chat.id)
+                    onClick={e => {
+                      e.stopPropagation();
+                      deleteChat(chat.id);
                     }}
                     className="text-gray-400 hover:text-red-400 transition-colors"
                   >
@@ -219,7 +234,7 @@ export default function SimpleDashboardPage() {
             <>
               {/* Messages */}
               <div className="flex-1 overflow-y-auto p-4 space-y-4">
-                {currentChat.messages.map((message) => (
+                {currentChat.messages.map(message => (
                   <motion.div
                     key={message.id}
                     initial={{ opacity: 0, y: 10 }}
@@ -236,7 +251,9 @@ export default function SimpleDashboardPage() {
                       <div className="flex items-start justify-between gap-2">
                         <p className="whitespace-pre-wrap">{message.content}</p>
                         <button
-                          onClick={() => copyMessage(message.content, message.id)}
+                          onClick={() =>
+                            copyMessage(message.content, message.id)
+                          }
                           className="text-gray-400 hover:text-white transition-colors"
                         >
                           {copiedId === message.id ? (
@@ -249,7 +266,7 @@ export default function SimpleDashboardPage() {
                     </div>
                   </motion.div>
                 ))}
-                
+
                 {isLoading && (
                   <div className="flex justify-start">
                     <div className="bg-gray-700 p-4 rounded-lg">
@@ -262,16 +279,16 @@ export default function SimpleDashboardPage() {
               {/* Input */}
               <div className="p-4 border-t border-gray-700">
                 <form
-                  onSubmit={(e) => {
-                    e.preventDefault()
-                    sendMessage(inputValue)
+                  onSubmit={e => {
+                    e.preventDefault();
+                    sendMessage(inputValue);
                   }}
                   className="flex gap-2"
                 >
                   <input
                     type="text"
                     value={inputValue}
-                    onChange={(e) => setInputValue(e.target.value)}
+                    onChange={e => setInputValue(e.target.value)}
                     placeholder="Type your message..."
                     className="flex-1 bg-gray-800 border border-gray-600 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:border-orange-500"
                     disabled={isLoading}
@@ -298,5 +315,5 @@ export default function SimpleDashboardPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

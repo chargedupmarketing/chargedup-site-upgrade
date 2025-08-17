@@ -1,74 +1,77 @@
-'use client'
+'use client';
 
-import { useState, useEffect, useRef } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { 
-  MessageSquare, 
-  Send, 
-  X, 
-  Zap, 
-  Bot, 
-  User, 
+import { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import {
+  MessageSquare,
+  Send,
+  X,
+  Zap,
+  Bot,
+  User,
   Loader2,
   Minimize2,
-  Maximize2
-} from 'lucide-react'
+  Maximize2,
+} from 'lucide-react';
 
 interface Message {
-  id: string
-  content: string
-  role: 'user' | 'assistant'
-  timestamp: Date
+  id: string;
+  content: string;
+  role: 'user' | 'assistant';
+  timestamp: Date;
 }
 
 interface CornerChatPopupProps {
-  className?: string
+  className?: string;
 }
 
-export default function CornerChatPopup({ className = '' }: CornerChatPopupProps) {
-  const [isOpen, setIsOpen] = useState(false)
-  const [isMinimized, setIsMinimized] = useState(false)
-  const [messages, setMessages] = useState<Message[]>([])
-  const [inputValue, setInputValue] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
-  const [showTooltip, setShowTooltip] = useState(false)
-  const [unreadCount, setUnreadCount] = useState(1) // Start with 1 for the welcome message
-  const messagesEndRef = useRef<HTMLDivElement>(null)
+export default function CornerChatPopup({
+  className = '',
+}: CornerChatPopupProps) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [isMinimized, setIsMinimized] = useState(false);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [inputValue, setInputValue] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [showTooltip, setShowTooltip] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(1); // Start with 1 for the welcome message
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Initialize with welcome message
   useEffect(() => {
     const welcomeMessage: Message = {
       id: 'welcome',
-      content: "Hey there 👋 Welcome to Charged Up! I'm your AI assistant. Want to explore our services, check your dashboard, or need quick support? Just type below — I've got you covered ⚡",
+      content:
+        "Hey there 👋 Welcome to Charged Up! I'm your AI assistant. Want to explore our services, check your dashboard, or need quick support? Just type below — I've got you covered ⚡",
       role: 'assistant',
-      timestamp: new Date()
-    }
-    setMessages([welcomeMessage])
-  }, [])
+      timestamp: new Date(),
+    };
+    setMessages([welcomeMessage]);
+  }, []);
 
   // Auto scroll to bottom when new messages arrive
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }, [messages])
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
 
   const handleSendMessage = async () => {
-    if (!inputValue.trim() || isLoading) return
+    if (!inputValue.trim() || isLoading) return;
 
     const userMessage: Message = {
       id: `user-${Date.now()}`,
       content: inputValue.trim(),
       role: 'user',
-      timestamp: new Date()
-    }
+      timestamp: new Date(),
+    };
 
-    setMessages(prev => [...prev, userMessage])
-    setInputValue('')
-    setIsLoading(true)
+    setMessages(prev => [...prev, userMessage]);
+    setInputValue('');
+    setIsLoading(true);
 
     try {
       // Get user data if available
-      const userData = localStorage.getItem('user')
-      const user = userData ? JSON.parse(userData) : null
+      const userData = localStorage.getItem('user');
+      const user = userData ? JSON.parse(userData) : null;
 
       const response = await fetch('/api/ai-chat', {
         method: 'POST',
@@ -77,64 +80,65 @@ export default function CornerChatPopup({ className = '' }: CornerChatPopupProps
           message: userMessage.content,
           conversationHistory: messages,
           userId: user?.id,
-          userName: user?.name
+          userName: user?.name,
         }),
-      })
+      });
 
-      const data = await response.json()
+      const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || 'Failed to get AI response')
+        throw new Error(data.error || 'Failed to get AI response');
       }
 
       const aiMessage: Message = {
         id: `ai-${Date.now()}`,
         content: data.response,
         role: 'assistant',
-        timestamp: new Date()
-      }
+        timestamp: new Date(),
+      };
 
-      setMessages(prev => [...prev, aiMessage])
-      
+      setMessages(prev => [...prev, aiMessage]);
+
       // Increment unread count if chat is closed or minimized
       if (!isOpen || isMinimized) {
-        setUnreadCount(prev => prev + 1)
+        setUnreadCount(prev => prev + 1);
       }
     } catch (error) {
-      console.error('Error sending message:', error)
+      console.error('Error sending message:', error);
       const errorMessage: Message = {
         id: `error-${Date.now()}`,
-        content: "Sorry, I'm having trouble responding right now. Please try again or contact support if the issue persists.",
+        content:
+          "Sorry, I'm having trouble responding right now. Please try again or contact support if the issue persists.",
         role: 'assistant',
-        timestamp: new Date()
-      }
-      setMessages(prev => [...prev, errorMessage])
+        timestamp: new Date(),
+      };
+      setMessages(prev => [...prev, errorMessage]);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault()
-      handleSendMessage()
+      e.preventDefault();
+      handleSendMessage();
     }
-  }
+  };
 
   const openChat = () => {
-    setIsOpen(true)
-    setIsMinimized(false)
-    setUnreadCount(0) // Clear unread count when opening chat
-  }
+    setIsOpen(true);
+    setIsMinimized(false);
+    setUnreadCount(0); // Clear unread count when opening chat
+  };
 
   const closeChat = () => {
-    setIsOpen(false)
-    setIsMinimized(false)
-  }
+    setIsOpen(false);
+    setIsMinimized(false);
+  };
 
   const toggleMinimize = () => {
-    setIsMinimized(!isMinimized)
-  }
+    setIsMinimized(!isMinimized);
+  };
 
   return (
     <div className={`fixed bottom-6 right-6 z-50 ${className}`}>
@@ -154,10 +158,10 @@ export default function CornerChatPopup({ className = '' }: CornerChatPopupProps
           >
             {/* Glow effect */}
             <div className="absolute inset-0 rounded-full bg-gradient-to-r from-[#fc5f17] to-[#fcb80a] opacity-75 blur-lg animate-pulse" />
-            
+
             {/* Icon */}
             <Zap className="w-8 h-8 text-black relative z-10" />
-            
+
             {/* Notification Badge */}
             {unreadCount > 0 && (
               <motion.div
@@ -168,7 +172,7 @@ export default function CornerChatPopup({ className = '' }: CornerChatPopupProps
                 {unreadCount > 9 ? '9+' : unreadCount}
               </motion.div>
             )}
-            
+
             {/* Tooltip */}
             <AnimatePresence>
               {showTooltip && (
@@ -194,7 +198,7 @@ export default function CornerChatPopup({ className = '' }: CornerChatPopupProps
             initial={{ opacity: 0, y: 20, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.9 }}
-            transition={{ duration: 0.3, ease: "easeOut" }}
+            transition={{ duration: 0.3, ease: 'easeOut' }}
             className="absolute bottom-0 right-0 w-[350px] bg-gray-900/95 backdrop-blur-sm rounded-2xl shadow-2xl border border-white/10 overflow-hidden"
             style={{ height: isMinimized ? '60px' : '520px' }}
           >
@@ -205,8 +209,12 @@ export default function CornerChatPopup({ className = '' }: CornerChatPopupProps
                   <Zap className="w-5 h-5 text-[#fc5f17]" />
                 </div>
                 <div>
-                  <h3 className="text-black font-semibold text-sm">Charged Up AI Assistant ⚡</h3>
-                  <p className="text-black/70 text-xs">Ask me anything about our services</p>
+                  <h3 className="text-black font-semibold text-sm">
+                    Charged Up AI Assistant ⚡
+                  </h3>
+                  <p className="text-black/70 text-xs">
+                    Ask me anything about our services
+                  </p>
                 </div>
               </div>
               <div className="flex items-center gap-2">
@@ -232,22 +240,27 @@ export default function CornerChatPopup({ className = '' }: CornerChatPopupProps
             {/* Chat Content - Only show when not minimized */}
             <AnimatePresence>
               {!isMinimized && (
-                                 <motion.div
-                   initial={{ opacity: 0, height: 0 }}
-                   animate={{ opacity: 1, height: 'auto' }}
-                   exit={{ opacity: 0, height: 0 }}
-                   className="flex flex-col h-full"
-                   style={{ height: '456px' }}
-                 >
-                   {/* Messages Area */}
-                   <div className="flex-1 p-4 pt-8 space-y-4 overflow-y-auto" style={{ paddingBottom: '80px' }}>
-                    {messages.map((message) => (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0 }}
+                  className="flex flex-col h-full"
+                  style={{ height: '456px' }}
+                >
+                  {/* Messages Area */}
+                  <div
+                    className="flex-1 p-4 pt-8 space-y-4 overflow-y-auto"
+                    style={{ paddingBottom: '80px' }}
+                  >
+                    {messages.map(message => (
                       <motion.div
                         key={message.id}
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         className={`flex gap-3 ${
-                          message.role === 'user' ? 'justify-end' : 'justify-start'
+                          message.role === 'user'
+                            ? 'justify-end'
+                            : 'justify-start'
                         }`}
                       >
                         {message.role === 'assistant' && (
@@ -255,7 +268,7 @@ export default function CornerChatPopup({ className = '' }: CornerChatPopupProps
                             <Bot className="w-4 h-4 text-black" />
                           </div>
                         )}
-                        
+
                         <div
                           className={`max-w-[250px] rounded-2xl px-4 py-2 ${
                             message.role === 'user'
@@ -275,7 +288,7 @@ export default function CornerChatPopup({ className = '' }: CornerChatPopupProps
                         )}
                       </motion.div>
                     ))}
-                    
+
                     {/* Loading indicator */}
                     {isLoading && (
                       <motion.div
@@ -289,36 +302,38 @@ export default function CornerChatPopup({ className = '' }: CornerChatPopupProps
                         <div className="bg-white/5 rounded-2xl px-4 py-2 border border-white/10">
                           <div className="flex items-center gap-2">
                             <Loader2 className="w-4 h-4 animate-spin text-[#fc5f17]" />
-                            <span className="text-white/70 text-sm">Thinking...</span>
+                            <span className="text-white/70 text-sm">
+                              Thinking...
+                            </span>
                           </div>
                         </div>
                       </motion.div>
                     )}
-                    
+
                     <div ref={messagesEndRef} />
                   </div>
 
-                                     {/* Input Area - Fixed at bottom */}
-                   <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-white/10 bg-gray-900/95 backdrop-blur-sm">
-                     <div className="flex gap-2">
-                       <input
-                         type="text"
-                         value={inputValue}
-                         onChange={(e) => setInputValue(e.target.value)}
-                         onKeyPress={handleKeyPress}
-                         placeholder="Type your message..."
-                         disabled={isLoading}
-                         className="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white placeholder-white/50 focus:border-[#fc5f17] focus:outline-none transition-all duration-200 text-sm"
-                       />
-                       <button
-                         onClick={handleSendMessage}
-                         disabled={!inputValue.trim() || isLoading}
-                         className="bg-gradient-to-r from-[#fc5f17] to-[#fcb80a] text-black p-2 rounded-xl hover:shadow-lg hover:shadow-orange-500/25 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                       >
-                         <Send className="w-4 h-4" />
-                       </button>
-                     </div>
-                   </div>
+                  {/* Input Area - Fixed at bottom */}
+                  <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-white/10 bg-gray-900/95 backdrop-blur-sm">
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        value={inputValue}
+                        onChange={e => setInputValue(e.target.value)}
+                        onKeyPress={handleKeyPress}
+                        placeholder="Type your message..."
+                        disabled={isLoading}
+                        className="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white placeholder-white/50 focus:border-[#fc5f17] focus:outline-none transition-all duration-200 text-sm"
+                      />
+                      <button
+                        onClick={handleSendMessage}
+                        disabled={!inputValue.trim() || isLoading}
+                        className="bg-gradient-to-r from-[#fc5f17] to-[#fcb80a] text-black p-2 rounded-xl hover:shadow-lg hover:shadow-orange-500/25 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        <Send className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
                 </motion.div>
               )}
             </AnimatePresence>
@@ -326,5 +341,5 @@ export default function CornerChatPopup({ className = '' }: CornerChatPopupProps
         )}
       </AnimatePresence>
     </div>
-  )
+  );
 }

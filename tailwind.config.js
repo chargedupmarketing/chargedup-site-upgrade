@@ -12,10 +12,10 @@ module.exports = {
           primary: '#fc5f17',
           accent: '#fcb80a',
           text: '#FFFFFF',
-          bg: '#000000'
-        }
+          bg: '#000000',
+        },
       },
-      borderRadius: { '2xl': '1.25rem' }
+      borderRadius: { '2xl': '1.25rem' },
     },
   },
   plugins: [],

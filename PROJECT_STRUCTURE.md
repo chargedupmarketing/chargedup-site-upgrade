@@ -51,16 +51,19 @@ chargedup-site2/
 ## 🎯 **Key Benefits of This Structure**
 
 ### **✅ Organization**
+
 - **Separation of Concerns**: API logic, types, and utilities are clearly separated
 - **Modular Design**: Each component has a single responsibility
 - **Easy Navigation**: Logical folder structure makes finding files simple
 
 ### **✅ Maintainability**
+
 - **Reusable Components**: Common functionality is centralized
 - **Type Safety**: All interfaces are defined in one place
 - **Configuration**: AI settings and constants are centralized
 
 ### **✅ Scalability**
+
 - **Easy to Add Features**: New AI models can be added to the API client
 - **Component Reuse**: UI components can be shared across pages
 - **API Expansion**: New endpoints can follow the same pattern
@@ -68,18 +71,21 @@ chargedup-site2/
 ## 🔧 **How to Use This Structure**
 
 ### **Adding New AI Features**
+
 1. **Add to `lib/api/clarifai.ts`** - New API methods
 2. **Add to `lib/types/`** - New type definitions
 3. **Add to `lib/constants/`** - New configuration options
 4. **Create new API route** in `app/api/`
 
 ### **Adding New UI Components**
+
 1. **Create in appropriate folder** (`ui/`, `forms/`, `layout/`)
 2. **Import types** from `lib/types/`
 3. **Use utilities** from `lib/utils/`
 4. **Follow naming conventions**
 
 ### **Adding New Pages**
+
 1. **Create in `app/`** following Next.js App Router conventions
 2. **Import components** from organized component folders
 3. **Use types** from `lib/types/`
@@ -88,6 +94,7 @@ chargedup-site2/
 ## 🚀 **Next Steps**
 
 This structure makes your project:
+
 - **Easier to maintain** - Clear organization
 - **More professional** - Industry-standard structure
 - **Ready to scale** - Easy to add new features

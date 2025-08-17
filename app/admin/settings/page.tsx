@@ -1,67 +1,70 @@
-'use client'
+'use client';
 
-import { useState, useEffect } from 'react'
-import { 
-  Settings, 
-  Save, 
-  RefreshCw, 
-  Shield, 
-  Mail, 
-  Globe, 
+import { useState, useEffect } from 'react';
+import {
+  Settings,
+  Save,
+  RefreshCw,
+  Shield,
+  Mail,
+  Globe,
   Database,
   Bell,
   Palette,
   Key,
   AlertTriangle,
-  CheckCircle
-} from 'lucide-react'
+  CheckCircle,
+} from 'lucide-react';
 
 interface SystemSettings {
   general: {
-    companyName: string
-    supportEmail: string
-    timezone: string
-    dateFormat: string
-    language: string
-  }
+    companyName: string;
+    supportEmail: string;
+    timezone: string;
+    dateFormat: string;
+    language: string;
+  };
   security: {
-    sessionTimeout: number
-    maxLoginAttempts: number
-    requireTwoFactor: boolean
-    passwordMinLength: number
-    enableAuditLog: boolean
-  }
+    sessionTimeout: number;
+    maxLoginAttempts: number;
+    requireTwoFactor: boolean;
+    passwordMinLength: number;
+    enableAuditLog: boolean;
+  };
   email: {
-    smtpHost: string
-    smtpPort: number
-    smtpUsername: string
-    smtpPassword: string
-    fromEmail: string
-    fromName: string
-    enableNotifications: boolean
-  }
+    smtpHost: string;
+    smtpPort: number;
+    smtpUsername: string;
+    smtpPassword: string;
+    fromEmail: string;
+    fromName: string;
+    enableNotifications: boolean;
+  };
   notifications: {
-    emailNotifications: boolean
-    slackNotifications: boolean
-    slackWebhook: string
-    dailyDigest: boolean
-    weeklyReport: boolean
-  }
+    emailNotifications: boolean;
+    slackNotifications: boolean;
+    slackWebhook: string;
+    dailyDigest: boolean;
+    weeklyReport: boolean;
+  };
   appearance: {
-    theme: 'dark' | 'light' | 'auto'
-    primaryColor: string
-    logoUrl: string
-    faviconUrl: string
-  }
+    theme: 'dark' | 'light' | 'auto';
+    primaryColor: string;
+    logoUrl: string;
+    faviconUrl: string;
+  };
 }
 
 export default function SystemSettings() {
-  const [settings, setSettings] = useState<SystemSettings | null>(null)
-  const [activeTab, setActiveTab] = useState<'general' | 'security' | 'email' | 'notifications' | 'appearance'>('general')
-  const [loading, setLoading] = useState(true)
-  const [saving, setSaving] = useState(false)
-  const [hasChanges, setHasChanges] = useState(false)
-  const [originalSettings, setOriginalSettings] = useState<SystemSettings | null>(null)
+  const [settings, setSettings] = useState<SystemSettings | null>(null);
+  const [activeTab, setActiveTab] = useState<
+    'general' | 'security' | 'email' | 'notifications' | 'appearance'
+  >('general');
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [hasChanges, setHasChanges] = useState(false);
+  const [originalSettings, setOriginalSettings] =
+    useState<SystemSettings | null>(null);
 
   // Mock data - replace with actual API calls
   useEffect(() => {
@@ -71,14 +74,14 @@ export default function SystemSettings() {
         supportEmail: '',
         timezone: 'UTC',
         dateFormat: 'MM/DD/YYYY',
-        language: 'en'
+        language: 'en',
       },
       security: {
         sessionTimeout: 30,
         maxLoginAttempts: 5,
         requireTwoFactor: false,
         passwordMinLength: 8,
-        enableAuditLog: false
+        enableAuditLog: false,
       },
       email: {
         smtpHost: '',
@@ -87,76 +90,86 @@ export default function SystemSettings() {
         smtpPassword: '',
         fromEmail: '',
         fromName: '',
-        enableNotifications: true
+        enableNotifications: true,
       },
       notifications: {
         emailNotifications: true,
         slackNotifications: false,
         slackWebhook: '',
         dailyDigest: false,
-        weeklyReport: false
+        weeklyReport: false,
       },
       appearance: {
         theme: 'dark',
         primaryColor: '#f97316',
         logoUrl: '',
-        faviconUrl: ''
-      }
-    })
-  }, [])
+        faviconUrl: '',
+      },
+    });
+  }, []);
 
-  const handleSettingChange = (section: keyof SystemSettings, key: string, value: any) => {
-    if (!settings) return
-    
+  const handleSettingChange = (
+    section: keyof SystemSettings,
+    key: string,
+    value: any
+  ) => {
+    if (!settings) return;
+
     setSettings(prev => ({
       ...prev!,
       [section]: {
         ...prev![section],
-        [key]: value
-      }
-    }))
-    
-    setHasChanges(true)
-  }
+        [key]: value,
+      },
+    }));
+
+    setHasChanges(true);
+  };
 
   const handleSave = async () => {
-    if (!settings) return
-    
-    setSaving(true)
-    
+    if (!settings) return;
+
+    setSaving(true);
+
     try {
       // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      
-      setOriginalSettings(settings)
-      setHasChanges(false)
-      
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      setOriginalSettings(settings);
+      setHasChanges(false);
+
       // Show success message
-      alert('Settings saved successfully!')
+      alert('Settings saved successfully!');
     } catch (error) {
-      alert('Failed to save settings. Please try again.')
+      alert('Failed to save settings. Please try again.');
     } finally {
-      setSaving(false)
+      setSaving(false);
     }
-  }
+  };
 
   const handleReset = () => {
     if (originalSettings) {
-      setSettings(originalSettings)
-      setHasChanges(false)
+      setSettings(originalSettings);
+      setHasChanges(false);
     }
-  }
+  };
 
   const getTabIcon = (tab: string) => {
     switch (tab) {
-      case 'general': return <Globe className="w-4 h-4" />
-      case 'security': return <Shield className="w-4 h-4" />
-      case 'email': return <Mail className="w-4 h-4" />
-      case 'notifications': return <Bell className="w-4 h-4" />
-      case 'appearance': return <Palette className="w-4 h-4" />
-      default: return <Settings className="w-4 h-4" />
+      case 'general':
+        return <Globe className="w-4 h-4" />;
+      case 'security':
+        return <Shield className="w-4 h-4" />;
+      case 'email':
+        return <Mail className="w-4 h-4" />;
+      case 'notifications':
+        return <Bell className="w-4 h-4" />;
+      case 'appearance':
+        return <Palette className="w-4 h-4" />;
+      default:
+        return <Settings className="w-4 h-4" />;
     }
-  }
+  };
 
   if (loading) {
     return (
@@ -165,17 +178,19 @@ export default function SystemSettings() {
           <div className="text-white text-xl">Loading system settings...</div>
         </div>
       </div>
-    )
+    );
   }
 
   if (!settings) {
     return (
       <div className="p-6">
         <div className="text-center py-12">
-          <div className="text-red-400 text-xl">Failed to load system settings</div>
+          <div className="text-red-400 text-xl">
+            Failed to load system settings
+          </div>
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -183,7 +198,9 @@ export default function SystemSettings() {
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-white mb-2">System Settings</h1>
-        <p className="text-gray-400">Configure system preferences and global settings</p>
+        <p className="text-gray-400">
+          Configure system preferences and global settings
+        </p>
       </div>
 
       {/* Action Buttons */}
@@ -201,7 +218,7 @@ export default function SystemSettings() {
             )}
             {saving ? 'Saving...' : 'Save Changes'}
           </button>
-          
+
           <button
             onClick={handleReset}
             disabled={!hasChanges}
@@ -224,7 +241,15 @@ export default function SystemSettings() {
       <div className="bg-gray-800 rounded-xl border border-gray-700">
         {/* Tabs */}
         <div className="flex border-b border-gray-700 overflow-x-auto">
-          {(['general', 'security', 'email', 'notifications', 'appearance'] as const).map((tab) => (
+          {(
+            [
+              'general',
+              'security',
+              'email',
+              'notifications',
+              'appearance',
+            ] as const
+          ).map(tab => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
@@ -244,8 +269,10 @@ export default function SystemSettings() {
           {/* General Settings */}
           {activeTab === 'general' && (
             <div className="space-y-6">
-              <h3 className="text-lg font-semibold text-white mb-4">General Settings</h3>
-              
+              <h3 className="text-lg font-semibold text-white mb-4">
+                General Settings
+              </h3>
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-medium text-gray-300 mb-2">
@@ -254,7 +281,13 @@ export default function SystemSettings() {
                   <input
                     type="text"
                     value={settings.general.companyName}
-                    onChange={(e) => handleSettingChange('general', 'companyName', e.target.value)}
+                    onChange={e =>
+                      handleSettingChange(
+                        'general',
+                        'companyName',
+                        e.target.value
+                      )
+                    }
                     className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                   />
                 </div>
@@ -266,7 +299,13 @@ export default function SystemSettings() {
                   <input
                     type="email"
                     value={settings.general.supportEmail}
-                    onChange={(e) => handleSettingChange('general', 'supportEmail', e.target.value)}
+                    onChange={e =>
+                      handleSettingChange(
+                        'general',
+                        'supportEmail',
+                        e.target.value
+                      )
+                    }
                     className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                   />
                 </div>
@@ -277,13 +316,17 @@ export default function SystemSettings() {
                   </label>
                   <select
                     value={settings.general.timezone}
-                    onChange={(e) => handleSettingChange('general', 'timezone', e.target.value)}
+                    onChange={e =>
+                      handleSettingChange('general', 'timezone', e.target.value)
+                    }
                     className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                   >
                     <option value="America/New_York">Eastern Time (ET)</option>
                     <option value="America/Chicago">Central Time (CT)</option>
                     <option value="America/Denver">Mountain Time (MT)</option>
-                    <option value="America/Los_Angeles">Pacific Time (PT)</option>
+                    <option value="America/Los_Angeles">
+                      Pacific Time (PT)
+                    </option>
                     <option value="UTC">UTC</option>
                   </select>
                 </div>
@@ -294,7 +337,13 @@ export default function SystemSettings() {
                   </label>
                   <select
                     value={settings.general.dateFormat}
-                    onChange={(e) => handleSettingChange('general', 'dateFormat', e.target.value)}
+                    onChange={e =>
+                      handleSettingChange(
+                        'general',
+                        'dateFormat',
+                        e.target.value
+                      )
+                    }
                     className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                   >
                     <option value="MM/DD/YYYY">MM/DD/YYYY</option>
@@ -309,8 +358,10 @@ export default function SystemSettings() {
           {/* Security Settings */}
           {activeTab === 'security' && (
             <div className="space-y-6">
-              <h3 className="text-lg font-semibold text-white mb-4">Security Settings</h3>
-              
+              <h3 className="text-lg font-semibold text-white mb-4">
+                Security Settings
+              </h3>
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-medium text-gray-300 mb-2">
@@ -319,7 +370,13 @@ export default function SystemSettings() {
                   <input
                     type="number"
                     value={settings.security.sessionTimeout}
-                    onChange={(e) => handleSettingChange('security', 'sessionTimeout', parseInt(e.target.value))}
+                    onChange={e =>
+                      handleSettingChange(
+                        'security',
+                        'sessionTimeout',
+                        parseInt(e.target.value)
+                      )
+                    }
                     className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                   />
                 </div>
@@ -331,7 +388,13 @@ export default function SystemSettings() {
                   <input
                     type="number"
                     value={settings.security.maxLoginAttempts}
-                    onChange={(e) => handleSettingChange('security', 'maxLoginAttempts', parseInt(e.target.value))}
+                    onChange={e =>
+                      handleSettingChange(
+                        'security',
+                        'maxLoginAttempts',
+                        parseInt(e.target.value)
+                      )
+                    }
                     className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                   />
                 </div>
@@ -343,7 +406,13 @@ export default function SystemSettings() {
                   <input
                     type="number"
                     value={settings.security.passwordMinLength}
-                    onChange={(e) => handleSettingChange('security', 'passwordMinLength', parseInt(e.target.value))}
+                    onChange={e =>
+                      handleSettingChange(
+                        'security',
+                        'passwordMinLength',
+                        parseInt(e.target.value)
+                      )
+                    }
                     className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                   />
                 </div>
@@ -354,20 +423,36 @@ export default function SystemSettings() {
                   <input
                     type="checkbox"
                     checked={settings.security.requireTwoFactor}
-                    onChange={(e) => handleSettingChange('security', 'requireTwoFactor', e.target.checked)}
+                    onChange={e =>
+                      handleSettingChange(
+                        'security',
+                        'requireTwoFactor',
+                        e.target.checked
+                      )
+                    }
                     className="w-4 h-4 text-orange-500 bg-gray-700 border-gray-600 rounded focus:ring-orange-500 focus:ring-2"
                   />
-                  <label className="ml-2 text-sm text-gray-300">Require Two-Factor Authentication</label>
+                  <label className="ml-2 text-sm text-gray-300">
+                    Require Two-Factor Authentication
+                  </label>
                 </div>
 
                 <div className="flex items-center">
                   <input
                     type="checkbox"
                     checked={settings.security.enableAuditLog}
-                    onChange={(e) => handleSettingChange('security', 'enableAuditLog', e.target.checked)}
+                    onChange={e =>
+                      handleSettingChange(
+                        'security',
+                        'enableAuditLog',
+                        e.target.checked
+                      )
+                    }
                     className="w-4 h-4 text-orange-500 bg-gray-700 border-gray-600 rounded focus:ring-orange-500 focus:ring-2"
                   />
-                  <label className="ml-2 text-sm text-gray-300">Enable Audit Logging</label>
+                  <label className="ml-2 text-sm text-gray-300">
+                    Enable Audit Logging
+                  </label>
                 </div>
               </div>
             </div>
@@ -376,8 +461,10 @@ export default function SystemSettings() {
           {/* Email Settings */}
           {activeTab === 'email' && (
             <div className="space-y-6">
-              <h3 className="text-lg font-semibold text-white mb-4">Email Configuration</h3>
-              
+              <h3 className="text-lg font-semibold text-white mb-4">
+                Email Configuration
+              </h3>
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-medium text-gray-300 mb-2">
@@ -386,7 +473,9 @@ export default function SystemSettings() {
                   <input
                     type="text"
                     value={settings.email.smtpHost}
-                    onChange={(e) => handleSettingChange('email', 'smtpHost', e.target.value)}
+                    onChange={e =>
+                      handleSettingChange('email', 'smtpHost', e.target.value)
+                    }
                     className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                   />
                 </div>
@@ -398,7 +487,13 @@ export default function SystemSettings() {
                   <input
                     type="number"
                     value={settings.email.smtpPort}
-                    onChange={(e) => handleSettingChange('email', 'smtpPort', parseInt(e.target.value))}
+                    onChange={e =>
+                      handleSettingChange(
+                        'email',
+                        'smtpPort',
+                        parseInt(e.target.value)
+                      )
+                    }
                     className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                   />
                 </div>
@@ -410,7 +505,13 @@ export default function SystemSettings() {
                   <input
                     type="text"
                     value={settings.email.smtpUsername}
-                    onChange={(e) => handleSettingChange('email', 'smtpUsername', e.target.value)}
+                    onChange={e =>
+                      handleSettingChange(
+                        'email',
+                        'smtpUsername',
+                        e.target.value
+                      )
+                    }
                     className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                   />
                 </div>
@@ -422,7 +523,13 @@ export default function SystemSettings() {
                   <input
                     type="password"
                     value={settings.email.smtpPassword}
-                    onChange={(e) => handleSettingChange('email', 'smtpPassword', e.target.value)}
+                    onChange={e =>
+                      handleSettingChange(
+                        'email',
+                        'smtpPassword',
+                        e.target.value
+                      )
+                    }
                     className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                   />
                 </div>
@@ -434,7 +541,9 @@ export default function SystemSettings() {
                   <input
                     type="email"
                     value={settings.email.fromEmail}
-                    onChange={(e) => handleSettingChange('email', 'fromEmail', e.target.value)}
+                    onChange={e =>
+                      handleSettingChange('email', 'fromEmail', e.target.value)
+                    }
                     className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                   />
                 </div>
@@ -446,7 +555,9 @@ export default function SystemSettings() {
                   <input
                     type="text"
                     value={settings.email.fromName}
-                    onChange={(e) => handleSettingChange('email', 'fromName', e.target.value)}
+                    onChange={e =>
+                      handleSettingChange('email', 'fromName', e.target.value)
+                    }
                     className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                   />
                 </div>
@@ -456,10 +567,18 @@ export default function SystemSettings() {
                 <input
                   type="checkbox"
                   checked={settings.email.enableNotifications}
-                  onChange={(e) => handleSettingChange('email', 'enableNotifications', e.target.checked)}
+                  onChange={e =>
+                    handleSettingChange(
+                      'email',
+                      'enableNotifications',
+                      e.target.checked
+                    )
+                  }
                   className="w-4 h-4 text-orange-500 bg-gray-700 border-gray-600 rounded focus:ring-orange-500 focus:ring-2"
                 />
-                <label className="ml-2 text-sm text-gray-300">Enable Email Notifications</label>
+                <label className="ml-2 text-sm text-gray-300">
+                  Enable Email Notifications
+                </label>
               </div>
             </div>
           )}
@@ -467,27 +586,45 @@ export default function SystemSettings() {
           {/* Notification Settings */}
           {activeTab === 'notifications' && (
             <div className="space-y-6">
-              <h3 className="text-lg font-semibold text-white mb-4">Notification Preferences</h3>
-              
+              <h3 className="text-lg font-semibold text-white mb-4">
+                Notification Preferences
+              </h3>
+
               <div className="space-y-4">
                 <div className="flex items-center">
                   <input
                     type="checkbox"
                     checked={settings.notifications.emailNotifications}
-                    onChange={(e) => handleSettingChange('notifications', 'emailNotifications', e.target.checked)}
+                    onChange={e =>
+                      handleSettingChange(
+                        'notifications',
+                        'emailNotifications',
+                        e.target.checked
+                      )
+                    }
                     className="w-4 h-4 text-orange-500 bg-gray-700 border-gray-600 rounded focus:ring-orange-500 focus:ring-2"
                   />
-                  <label className="ml-2 text-sm text-gray-300">Email Notifications</label>
+                  <label className="ml-2 text-sm text-gray-300">
+                    Email Notifications
+                  </label>
                 </div>
 
                 <div className="flex items-center">
                   <input
                     type="checkbox"
                     checked={settings.notifications.slackNotifications}
-                    onChange={(e) => handleSettingChange('notifications', 'slackNotifications', e.target.checked)}
+                    onChange={e =>
+                      handleSettingChange(
+                        'notifications',
+                        'slackNotifications',
+                        e.target.checked
+                      )
+                    }
                     className="w-4 h-4 text-orange-500 bg-gray-700 border-gray-600 rounded focus:ring-orange-500 focus:ring-2"
                   />
-                  <label className="ml-2 text-sm text-gray-300">Slack Notifications</label>
+                  <label className="ml-2 text-sm text-gray-300">
+                    Slack Notifications
+                  </label>
                 </div>
 
                 {settings.notifications.slackNotifications && (
@@ -498,7 +635,13 @@ export default function SystemSettings() {
                     <input
                       type="url"
                       value={settings.notifications.slackWebhook}
-                      onChange={(e) => handleSettingChange('notifications', 'slackWebhook', e.target.value)}
+                      onChange={e =>
+                        handleSettingChange(
+                          'notifications',
+                          'slackWebhook',
+                          e.target.value
+                        )
+                      }
                       placeholder="https://hooks.slack.com/services/..."
                       className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                     />
@@ -509,20 +652,36 @@ export default function SystemSettings() {
                   <input
                     type="checkbox"
                     checked={settings.notifications.dailyDigest}
-                    onChange={(e) => handleSettingChange('notifications', 'dailyDigest', e.target.checked)}
+                    onChange={e =>
+                      handleSettingChange(
+                        'notifications',
+                        'dailyDigest',
+                        e.target.checked
+                      )
+                    }
                     className="w-4 h-4 text-orange-500 bg-gray-700 border-gray-600 rounded focus:ring-orange-500 focus:ring-2"
                   />
-                  <label className="ml-2 text-sm text-gray-300">Daily Digest Email</label>
+                  <label className="ml-2 text-sm text-gray-300">
+                    Daily Digest Email
+                  </label>
                 </div>
 
                 <div className="flex items-center">
                   <input
                     type="checkbox"
                     checked={settings.notifications.weeklyReport}
-                    onChange={(e) => handleSettingChange('notifications', 'weeklyReport', e.target.checked)}
+                    onChange={e =>
+                      handleSettingChange(
+                        'notifications',
+                        'weeklyReport',
+                        e.target.checked
+                      )
+                    }
                     className="w-4 h-4 text-orange-500 bg-gray-700 border-gray-600 rounded focus:ring-orange-500 focus:ring-2"
                   />
-                  <label className="ml-2 text-sm text-gray-300">Weekly Performance Report</label>
+                  <label className="ml-2 text-sm text-gray-300">
+                    Weekly Performance Report
+                  </label>
                 </div>
               </div>
             </div>
@@ -531,8 +690,10 @@ export default function SystemSettings() {
           {/* Appearance Settings */}
           {activeTab === 'appearance' && (
             <div className="space-y-6">
-              <h3 className="text-lg font-semibold text-white mb-4">Appearance & Branding</h3>
-              
+              <h3 className="text-lg font-semibold text-white mb-4">
+                Appearance & Branding
+              </h3>
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-medium text-gray-300 mb-2">
@@ -540,7 +701,9 @@ export default function SystemSettings() {
                   </label>
                   <select
                     value={settings.appearance.theme}
-                    onChange={(e) => handleSettingChange('appearance', 'theme', e.target.value)}
+                    onChange={e =>
+                      handleSettingChange('appearance', 'theme', e.target.value)
+                    }
                     className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                   >
                     <option value="dark">Dark</option>
@@ -557,13 +720,25 @@ export default function SystemSettings() {
                     <input
                       type="color"
                       value={settings.appearance.primaryColor}
-                      onChange={(e) => handleSettingChange('appearance', 'primaryColor', e.target.value)}
+                      onChange={e =>
+                        handleSettingChange(
+                          'appearance',
+                          'primaryColor',
+                          e.target.value
+                        )
+                      }
                       className="w-12 h-10 rounded border border-gray-600 cursor-pointer"
                     />
                     <input
                       type="text"
                       value={settings.appearance.primaryColor}
-                      onChange={(e) => handleSettingChange('appearance', 'primaryColor', e.target.value)}
+                      onChange={e =>
+                        handleSettingChange(
+                          'appearance',
+                          'primaryColor',
+                          e.target.value
+                        )
+                      }
                       className="flex-1 px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                     />
                   </div>
@@ -576,7 +751,13 @@ export default function SystemSettings() {
                   <input
                     type="url"
                     value={settings.appearance.logoUrl}
-                    onChange={(e) => handleSettingChange('appearance', 'logoUrl', e.target.value)}
+                    onChange={e =>
+                      handleSettingChange(
+                        'appearance',
+                        'logoUrl',
+                        e.target.value
+                      )
+                    }
                     placeholder="https://example.com/logo.png"
                     className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                   />
@@ -589,7 +770,13 @@ export default function SystemSettings() {
                   <input
                     type="url"
                     value={settings.appearance.faviconUrl}
-                    onChange={(e) => handleSettingChange('appearance', 'faviconUrl', e.target.value)}
+                    onChange={e =>
+                      handleSettingChange(
+                        'appearance',
+                        'faviconUrl',
+                        e.target.value
+                      )
+                    }
                     placeholder="https://example.com/favicon.ico"
                     className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                   />
@@ -609,7 +796,7 @@ export default function SystemSettings() {
         <p className="text-red-300 text-sm mb-4">
           These actions are irreversible and may affect system functionality.
         </p>
-        
+
         <div className="flex gap-4">
           <button className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors">
             Clear All Data
@@ -623,5 +810,5 @@ export default function SystemSettings() {
         </div>
       </div>
     </div>
-  )
+  );
 }

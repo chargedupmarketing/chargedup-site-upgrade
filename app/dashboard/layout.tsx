@@ -1,15 +1,15 @@
-'use client'
+'use client';
 
-import { useState, useEffect } from 'react'
-import { useRouter, usePathname } from 'next/navigation'
-import { motion, AnimatePresence } from 'framer-motion'
-import { 
-  Zap, 
-  MessageSquare, 
-  BarChart3, 
-  Settings, 
-  LogOut, 
-  Menu, 
+import { useState, useEffect } from 'react';
+import { useRouter, usePathname } from 'next/navigation';
+import { motion, AnimatePresence } from 'framer-motion';
+import {
+  Zap,
+  MessageSquare,
+  BarChart3,
+  Settings,
+  LogOut,
+  Menu,
   X,
   Home,
   Users,
@@ -26,111 +26,111 @@ import {
   Shield as SecurityIcon,
   Palette,
   HelpCircle,
-  ExternalLink
-} from 'lucide-react'
+  ExternalLink,
+} from 'lucide-react';
 
 interface User {
-  name: string
-  email: string
-  plan: string
-  credits: number
-  avatar?: string
+  name: string;
+  email: string;
+  plan: string;
+  credits: number;
+  avatar?: string;
 }
 
 export default function DashboardLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
-  const router = useRouter()
-  const pathname = usePathname()
-  const [user, setUser] = useState<User | null>(null)
-  const [sidebarOpen, setSidebarOpen] = useState(false)
-  const [profileMenuOpen, setProfileMenuOpen] = useState(false)
+  const router = useRouter();
+  const pathname = usePathname();
+  const [user, setUser] = useState<User | null>(null);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [profileMenuOpen, setProfileMenuOpen] = useState(false);
 
   useEffect(() => {
     // Check if user is logged in
-    const userData = localStorage.getItem('user')
+    const userData = localStorage.getItem('user');
     if (!userData) {
-      router.push('/auth/login')
-      return
+      router.push('/auth/login');
+      return;
     }
-    
-    const userInfo = JSON.parse(userData)
-    setUser(userInfo)
-  }, [router])
+
+    const userInfo = JSON.parse(userData);
+    setUser(userInfo);
+  }, [router]);
 
   const handleLogout = () => {
-    localStorage.removeItem('user')
-    localStorage.removeItem('isAuthenticated')
-    router.push('/auth/login')
-  }
+    localStorage.removeItem('user');
+    localStorage.removeItem('isAuthenticated');
+    router.push('/auth/login');
+  };
 
   const navigation = [
     {
       name: 'Dashboard',
       href: '/dashboard',
       icon: Home,
-      description: 'Overview and analytics'
+      description: 'Overview and analytics',
     },
     {
       name: 'AI Chat',
       href: '/dashboard/ai-chat',
       icon: MessageSquare,
-      description: 'Chat with AI assistant'
+      description: 'Chat with AI assistant',
     },
     {
       name: 'Analytics',
       href: '/dashboard/analytics',
       icon: BarChart3,
-      description: 'Performance metrics'
+      description: 'Performance metrics',
     },
     {
       name: 'Templates',
       href: '/dashboard/templates',
       icon: Target,
-      description: 'Response templates'
+      description: 'Response templates',
     },
     {
       name: 'Settings',
       href: '/dashboard/settings',
       icon: Settings,
-      description: 'Account preferences'
-    }
-  ]
+      description: 'Account preferences',
+    },
+  ];
 
   const profileMenuItems = [
     {
       name: 'Profile Settings',
       icon: User,
       href: '/dashboard/settings',
-      description: 'Edit your profile information'
+      description: 'Edit your profile information',
     },
     {
       name: 'Security',
       icon: SecurityIcon,
       href: '/dashboard/settings?tab=security',
-      description: 'Password and security settings'
+      description: 'Password and security settings',
     },
     {
       name: 'Billing',
       icon: CreditCard,
       href: '/dashboard/settings?tab=billing',
-      description: 'Manage your subscription'
+      description: 'Manage your subscription',
     },
     {
       name: 'Appearance',
       icon: Palette,
       href: '/dashboard/settings?tab=appearance',
-      description: 'Customize your dashboard'
+      description: 'Customize your dashboard',
     },
     {
       name: 'Help & Support',
       icon: HelpCircle,
       href: '/help',
-      description: 'Get help and contact support'
-    }
-  ]
+      description: 'Get help and contact support',
+    },
+  ];
 
   if (!user) {
     return (
@@ -140,11 +140,11 @@ export default function DashboardLayout({
           <p className="text-white/60">Loading your dashboard...</p>
         </div>
       </div>
-    )
+    );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black flex">
+    <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black">
       {/* Mobile sidebar overlay */}
       <AnimatePresence>
         {sidebarOpen && (
@@ -159,11 +159,8 @@ export default function DashboardLayout({
       </AnimatePresence>
 
       {/* Sidebar */}
-      <motion.aside
-        initial={{ x: -300 }}
-        animate={{ x: sidebarOpen ? 0 : -300 }}
-        transition={{ type: "spring", damping: 20 }}
-        className={`fixed lg:relative top-0 left-0 h-full w-80 bg-white/5 backdrop-blur-xl border-r border-white/10 z-50 lg:z-auto ${
+      <aside
+        className={`fixed lg:block top-0 left-0 h-full w-80 bg-white/5 backdrop-blur-xl border-r border-white/10 z-50 lg:z-10 overflow-hidden transition-transform duration-300 ${
           sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
         }`}
       >
@@ -189,14 +186,17 @@ export default function DashboardLayout({
                 <div className="relative group">
                   <div className="w-16 h-16 bg-gradient-to-r from-cyan-400 to-emerald-400 rounded-full flex items-center justify-center overflow-hidden">
                     {user.avatar ? (
-                      <img 
-                        src={user.avatar} 
+                      <img
+                        src={user.avatar}
                         alt={user.name}
                         className="w-full h-full object-cover"
                       />
                     ) : (
                       <span className="text-black font-bold text-xl">
-                        {user.name.split(' ').map(n => n[0]).join('')}
+                        {user.name
+                          .split(' ')
+                          .map(n => n[0])
+                          .join('')}
                       </span>
                     )}
                   </div>
@@ -205,16 +205,20 @@ export default function DashboardLayout({
                     <Edit3 className="w-5 h-5 text-white" />
                   </button>
                 </div>
-                
+
                 <div className="flex-1 min-w-0">
-                  <h3 className="font-semibold text-white text-lg truncate">{user.name}</h3>
+                  <h3 className="font-semibold text-white text-lg truncate">
+                    {user.name}
+                  </h3>
                   <p className="text-white/60 text-sm truncate">{user.email}</p>
                   <div className="flex items-center gap-2 mt-1">
                     <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-orange-500/20 text-orange-400 border border-orange-500/30">
                       {user.plan} Plan
                     </span>
                     <span className="text-xs text-white/40">•</span>
-                    <span className="text-xs text-orange-400 font-medium">{user.credits} credits</span>
+                    <span className="text-xs text-orange-400 font-medium">
+                      {user.credits} credits
+                    </span>
                   </div>
                 </div>
               </div>
@@ -224,11 +228,13 @@ export default function DashboardLayout({
                 onClick={() => setProfileMenuOpen(!profileMenuOpen)}
                 className="w-full flex items-center justify-between p-3 bg-white/5 hover:bg-white/10 rounded-xl transition-all duration-200 border border-white/10 hover:border-white/20"
               >
-                <span className="text-white/80 text-sm font-medium">Profile Menu</span>
-                <ChevronDown 
+                <span className="text-white/80 text-sm font-medium">
+                  Profile Menu
+                </span>
+                <ChevronDown
                   className={`w-4 h-4 text-white/60 transition-transform duration-200 ${
                     profileMenuOpen ? 'rotate-180' : ''
-                  }`} 
+                  }`}
                 />
               </button>
 
@@ -241,15 +247,15 @@ export default function DashboardLayout({
                     exit={{ opacity: 0, height: 0 }}
                     className="mt-3 space-y-1 overflow-hidden"
                   >
-                    {profileMenuItems.map((item) => {
-                      const Icon = item.icon
+                    {profileMenuItems.map(item => {
+                      const Icon = item.icon;
                       return (
                         <motion.button
                           key={item.name}
                           onClick={() => {
-                            router.push(item.href)
-                            setProfileMenuOpen(false)
-                            setSidebarOpen(false)
+                            router.push(item.href);
+                            setProfileMenuOpen(false);
+                            setSidebarOpen(false);
                           }}
                           initial={{ opacity: 0, x: -10 }}
                           animate={{ opacity: 1, x: 0 }}
@@ -257,12 +263,16 @@ export default function DashboardLayout({
                         >
                           <Icon className="w-4 h-4 text-white/60 group-hover:text-white" />
                           <div className="flex-1 min-w-0">
-                            <div className="font-medium text-sm">{item.name}</div>
-                            <div className="text-xs text-white/50 truncate">{item.description}</div>
+                            <div className="font-medium text-sm truncate">
+                              {item.name}
+                            </div>
+                            <div className="text-xs text-white/50 truncate">
+                              {item.description}
+                            </div>
                           </div>
                           <ExternalLink className="w-3 h-3 text-white/40 group-hover:text-white/60" />
                         </motion.button>
-                      )
+                      );
                     })}
                   </motion.div>
                 )}
@@ -271,18 +281,18 @@ export default function DashboardLayout({
           </div>
 
           {/* Navigation */}
-          <nav className="flex-1 p-6">
+          <nav className="flex-1 p-6 overflow-y-auto">
             <div className="space-y-2">
-              {navigation.map((item) => {
-                const isActive = pathname === item.href
-                const Icon = item.icon
-                
+              {navigation.map(item => {
+                const isActive = pathname === item.href;
+                const Icon = item.icon;
+
                 return (
                   <motion.button
                     key={item.name}
                     onClick={() => {
-                      router.push(item.href)
-                      setSidebarOpen(false)
+                      router.push(item.href);
+                      setSidebarOpen(false);
                     }}
                     whileHover={{ x: 4 }}
                     whileTap={{ scale: 0.98 }}
@@ -292,13 +302,17 @@ export default function DashboardLayout({
                         : 'text-white/70 hover:text-white hover:bg-white/10 border border-transparent hover:border-white/20'
                     }`}
                   >
-                    <Icon className={`w-5 h-5 ${isActive ? 'text-orange-400' : 'text-white/60 group-hover:text-white'}`} />
-                    <div className="text-left">
-                      <div className="font-medium">{item.name}</div>
-                      <div className="text-xs text-white/50">{item.description}</div>
+                    <Icon
+                      className={`w-5 h-5 ${isActive ? 'text-orange-400' : 'text-white/60 group-hover:text-white'}`}
+                    />
+                    <div className="text-left flex-1 min-w-0">
+                      <div className="font-medium truncate">{item.name}</div>
+                      <div className="text-xs text-white/50 truncate">
+                        {item.description}
+                      </div>
                     </div>
                   </motion.button>
-                )
+                );
               })}
             </div>
           </nav>
@@ -314,12 +328,12 @@ export default function DashboardLayout({
             </button>
           </div>
         </div>
-      </motion.aside>
+      </aside>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col min-w-0">
+      <div className="lg:ml-80 lg:flex lg:flex-col">
         {/* Top Bar */}
-        <header className="border-b border-white/10 backdrop-blur-xl bg-white/5 sticky top-0 z-30">
+        <header className="border-b border-white/10 backdrop-blur-xl bg-white/5 sticky top-0 z-30 lg:left-80 lg:right-0 lg:absolute">
           <div className="flex items-center justify-between px-6 py-4">
             {/* Mobile menu button */}
             <button
@@ -332,7 +346,8 @@ export default function DashboardLayout({
             {/* Page Title */}
             <div className="flex items-center gap-4">
               <h1 className="text-xl font-bold text-white">
-                {navigation.find(item => item.href === pathname)?.name || 'Dashboard'}
+                {navigation.find(item => item.href === pathname)?.name ||
+                  'Dashboard'}
               </h1>
             </div>
 
@@ -358,10 +373,8 @@ export default function DashboardLayout({
         </header>
 
         {/* Page Content */}
-        <main className="flex-1 overflow-auto">
-          {children}
-        </main>
+        <main className="flex-1 overflow-auto lg:pt-16">{children}</main>
       </div>
     </div>
-  )
+  );
 }

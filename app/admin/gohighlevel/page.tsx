@@ -1,34 +1,46 @@
-'use client'
+'use client';
 
-import { useState, useEffect } from 'react'
-import { ExternalLink, ArrowRight, Clock, Users, BarChart3, Settings, Zap } from 'lucide-react'
+import { useState, useEffect } from 'react';
+import {
+  ExternalLink,
+  ArrowRight,
+  Clock,
+  Users,
+  BarChart3,
+  Settings,
+  Zap,
+} from 'lucide-react';
 
 export default function GoHighLevelRedirect() {
-  const [countdown, setCountdown] = useState(5)
-  const [isRedirecting, setIsRedirecting] = useState(false)
+  const [countdown, setCountdown] = useState(5);
+  const [isRedirecting, setIsRedirecting] = useState(false);
 
   useEffect(() => {
     if (countdown > 0) {
-      const timer = setTimeout(() => setCountdown(countdown - 1), 1000)
-      return () => clearTimeout(timer)
+      const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
+      return () => clearTimeout(timer);
     } else {
-      setIsRedirecting(true)
+      setIsRedirecting(true);
       // Redirect to GoHighLevel
-      window.open('https://app.gohighlevel.com', '_blank')
+      window.open('https://app.gohighlevel.com', '_blank');
     }
-  }, [countdown])
+  }, [countdown]);
 
   const handleRedirectNow = () => {
-    setIsRedirecting(true)
-    window.open('https://app.gohighlevel.com', '_blank')
-  }
+    setIsRedirecting(true);
+    window.open('https://app.gohighlevel.com', '_blank');
+  };
 
   return (
     <div className="p-6">
       {/* Header */}
       <div className="mb-8 text-center">
-        <h1 className="text-3xl font-bold text-white mb-2">GoHighLevel Platform</h1>
-        <p className="text-gray-400">Redirecting to our external CRM and marketing automation platform</p>
+        <h1 className="text-3xl font-bold text-white mb-2">
+          GoHighLevel Platform
+        </h1>
+        <p className="text-gray-400">
+          Redirecting to our external CRM and marketing automation platform
+        </p>
       </div>
 
       {/* Main Content */}
@@ -38,20 +50,24 @@ export default function GoHighLevelRedirect() {
           <div className="w-20 h-20 bg-blue-500/10 rounded-full flex items-center justify-center mx-auto mb-6">
             <ExternalLink className="w-10 h-10 text-blue-400" />
           </div>
-          
+
           <h2 className="text-2xl font-bold text-white mb-4">
             Redirecting to GoHighLevel
           </h2>
-          
+
           <p className="text-gray-400 mb-6 max-w-2xl mx-auto">
-            You're being redirected to our GoHighLevel platform where you can manage clients, 
-            campaigns, and marketing automation workflows.
+            You&apos;re being redirected to our GoHighLevel platform where you
+            can manage clients, campaigns, and marketing automation workflows.
           </p>
 
           {!isRedirecting ? (
             <div className="mb-6">
               <p className="text-gray-300 mb-4">
-                Automatic redirect in <span className="text-orange-400 font-bold text-xl">{countdown}</span> seconds
+                Automatic redirect in{' '}
+                <span className="text-orange-400 font-bold text-xl">
+                  {countdown}
+                </span>{' '}
+                seconds
               </p>
               <button
                 onClick={handleRedirectNow}
@@ -70,10 +86,10 @@ export default function GoHighLevelRedirect() {
           )}
 
           <div className="text-sm text-gray-500">
-            If you're not redirected automatically,{' '}
-            <a 
-              href="https://app.gohighlevel.com" 
-              target="_blank" 
+            If you&apos;re not redirected automatically,{' '}
+            <a
+              href="https://app.gohighlevel.com"
+              target="_blank"
               rel="noopener noreferrer"
               className="text-blue-400 hover:text-blue-300 underline"
             >
@@ -88,9 +104,12 @@ export default function GoHighLevelRedirect() {
             <div className="w-12 h-12 bg-green-500/10 rounded-lg flex items-center justify-center mb-4">
               <Users className="w-6 h-6 text-green-400" />
             </div>
-            <h3 className="text-lg font-semibold text-white mb-2">Client Management</h3>
+            <h3 className="text-lg font-semibold text-white mb-2">
+              Client Management
+            </h3>
             <p className="text-gray-400 text-sm">
-              Manage client relationships, track interactions, and maintain detailed client profiles
+              Manage client relationships, track interactions, and maintain
+              detailed client profiles
             </p>
           </div>
 
@@ -98,9 +117,12 @@ export default function GoHighLevelRedirect() {
             <div className="w-12 h-12 bg-purple-500/10 rounded-lg flex items-center justify-center mb-4">
               <Zap className="w-6 h-6 text-purple-400" />
             </div>
-            <h3 className="text-lg font-semibold text-white mb-2">Marketing Automation</h3>
+            <h3 className="text-lg font-semibold text-white mb-2">
+              Marketing Automation
+            </h3>
             <p className="text-gray-400 text-sm">
-              Create automated email sequences, SMS campaigns, and marketing workflows
+              Create automated email sequences, SMS campaigns, and marketing
+              workflows
             </p>
           </div>
 
@@ -108,9 +130,12 @@ export default function GoHighLevelRedirect() {
             <div className="w-12 h-12 bg-orange-500/10 rounded-lg flex items-center justify-center mb-4">
               <BarChart3 className="w-6 h-6 text-orange-400" />
             </div>
-            <h3 className="text-lg font-semibold text-white mb-2">Analytics & Reporting</h3>
+            <h3 className="text-lg font-semibold text-white mb-2">
+              Analytics & Reporting
+            </h3>
             <p className="text-gray-400 text-sm">
-              Track campaign performance, client engagement, and business metrics
+              Track campaign performance, client engagement, and business
+              metrics
             </p>
           </div>
 
@@ -118,9 +143,12 @@ export default function GoHighLevelRedirect() {
             <div className="w-12 h-12 bg-blue-500/10 rounded-lg flex items-center justify-center mb-4">
               <Clock className="w-6 h-6 text-blue-400" />
             </div>
-            <h3 className="text-lg font-semibold text-white mb-2">Appointment Scheduling</h3>
+            <h3 className="text-lg font-semibold text-white mb-2">
+              Appointment Scheduling
+            </h3>
             <p className="text-gray-400 text-sm">
-              Book strategy meetings, consultations, and follow-up calls with clients
+              Book strategy meetings, consultations, and follow-up calls with
+              clients
             </p>
           </div>
 
@@ -128,9 +156,12 @@ export default function GoHighLevelRedirect() {
             <div className="w-12 h-12 bg-indigo-500/10 rounded-lg flex items-center justify-center mb-4">
               <Settings className="w-6 h-6 text-indigo-400" />
             </div>
-            <h3 className="text-lg font-semibold text-white mb-2">Workflow Management</h3>
+            <h3 className="text-lg font-semibold text-white mb-2">
+              Workflow Management
+            </h3>
             <p className="text-gray-400 text-sm">
-              Streamline business processes with customizable workflows and automation
+              Streamline business processes with customizable workflows and
+              automation
             </p>
           </div>
 
@@ -138,16 +169,21 @@ export default function GoHighLevelRedirect() {
             <div className="w-12 h-12 bg-pink-500/10 rounded-lg flex items-center justify-center mb-4">
               <ExternalLink className="w-6 h-6 text-pink-400" />
             </div>
-            <h3 className="text-lg font-semibold text-white mb-2">Integrations</h3>
+            <h3 className="text-lg font-semibold text-white mb-2">
+              Integrations
+            </h3>
             <p className="text-gray-400 text-sm">
-              Connect with your favorite tools and platforms for seamless workflow
+              Connect with your favorite tools and platforms for seamless
+              workflow
             </p>
           </div>
         </div>
 
         {/* Quick Actions */}
         <div className="bg-gray-800 rounded-xl border border-gray-700 p-6">
-          <h3 className="text-lg font-semibold text-white mb-4">Quick Actions</h3>
+          <h3 className="text-lg font-semibold text-white mb-4">
+            Quick Actions
+          </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <a
               href="https://app.gohighlevel.com/contacts"
@@ -209,10 +245,10 @@ export default function GoHighLevelRedirect() {
             Need help with GoHighLevel? Contact your system administrator
           </p>
           <p className="text-sm text-gray-500">
-            Platform access is managed by your team's super admin
+            Platform access is managed by your team&apos;s super admin
           </p>
         </div>
       </div>
     </div>
-  )
+  );
 }

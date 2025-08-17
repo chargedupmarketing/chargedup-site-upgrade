@@ -1,61 +1,62 @@
-'use client'
+'use client';
 
-import { useState, useRef, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { Send, Sparkles, Copy, Check, Bot, User, Loader2 } from 'lucide-react'
+import { useState, useRef, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Send, Sparkles, Copy, Check, Bot, User, Loader2 } from 'lucide-react';
 
 interface Message {
-  id: string
-  role: 'user' | 'assistant'
-  content: string
-  timestamp: Date
+  id: string;
+  role: 'user' | 'assistant';
+  content: string;
+  timestamp: Date;
 }
 
 const SUGGESTED_PROMPTS = [
-  "Help me create a social media strategy for my SaaS startup",
-  "What are the best marketing channels for B2B software?",
-  "How can I improve my email marketing conversion rates?",
-  "Give me ideas for content marketing in the tech industry",
+  'Help me create a social media strategy for my SaaS startup',
+  'What are the best marketing channels for B2B software?',
+  'How can I improve my email marketing conversion rates?',
+  'Give me ideas for content marketing in the tech industry',
   "What's the best way to target enterprise customers?",
-  "How do I optimize my Google Ads for SaaS products?"
-]
+  'How do I optimize my Google Ads for SaaS products?',
+];
 
 export default function AIChatInterface() {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
       role: 'assistant',
-      content: "Hello! I'm your AI marketing assistant. I can help you with marketing strategies, content ideas, campaign optimization, and more. What would you like to know about today?",
-      timestamp: new Date()
-    }
-  ])
-  const [inputValue, setInputValue] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
-  const [copiedId, setCopiedId] = useState<string | null>(null)
-  const messagesEndRef = useRef<HTMLDivElement>(null)
-  const inputRef = useRef<HTMLTextAreaElement>(null)
+      content:
+        "Hello! I'm your AI marketing assistant. I can help you with marketing strategies, content ideas, campaign optimization, and more. What would you like to know about today?",
+      timestamp: new Date(),
+    },
+  ]);
+  const [inputValue, setInputValue] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [copiedId, setCopiedId] = useState<string | null>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
 
   useEffect(() => {
-    scrollToBottom()
-  }, [messages])
+    scrollToBottom();
+  }, [messages]);
 
   const handleSendMessage = async (content: string) => {
-    if (!content.trim() || isLoading) return
+    if (!content.trim() || isLoading) return;
 
     const userMessage: Message = {
       id: Date.now().toString(),
       role: 'user',
       content: content.trim(),
-      timestamp: new Date()
-    }
+      timestamp: new Date(),
+    };
 
-    setMessages(prev => [...prev, userMessage])
-    setInputValue('')
-    setIsLoading(true)
+    setMessages(prev => [...prev, userMessage]);
+    setInputValue('');
+    setIsLoading(true);
 
     try {
       // Call the real AI API
@@ -66,64 +67,62 @@ export default function AIChatInterface() {
         },
         body: JSON.stringify({
           message: content.trim(),
-          conversationHistory: messages.slice(-10) // Send last 10 messages for context
+          conversationHistory: messages.slice(-10), // Send last 10 messages for context
         }),
-      })
+      });
 
-      const data = await response.json()
+      const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || 'Failed to get AI response')
+        throw new Error(data.error || 'Failed to get AI response');
       }
 
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
         content: data.response,
-        timestamp: new Date()
-      }
-      
-      setMessages(prev => [...prev, assistantMessage])
+        timestamp: new Date(),
+      };
+
+      setMessages(prev => [...prev, assistantMessage]);
     } catch (error: any) {
-      console.error('AI Chat Error:', error)
-      
+      console.error('AI Chat Error:', error);
+
       // Show error message to user
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
         content: `I apologize, but I encountered an error: ${error.message}. Please try again or contact our team if the issue persists.`,
-        timestamp: new Date()
-      }
-      
-      setMessages(prev => [...prev, errorMessage])
+        timestamp: new Date(),
+      };
+
+      setMessages(prev => [...prev, errorMessage]);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
-
-
+  };
 
   const handleCopyMessage = async (content: string, messageId: string) => {
     try {
-      await navigator.clipboard.writeText(content)
-      setCopiedId(messageId)
-      setTimeout(() => setCopiedId(null), 2000)
+      await navigator.clipboard.writeText(content);
+      setCopiedId(messageId);
+      setTimeout(() => setCopiedId(null), 2000);
     } catch (err) {
-      console.error('Failed to copy text: ', err)
+      console.error('Failed to copy text: ', err);
     }
-  }
+  };
 
   const handleSuggestedPrompt = (prompt: string) => {
-    setInputValue(prompt)
-    inputRef.current?.focus()
-  }
+    setInputValue(prompt);
+    inputRef.current?.focus();
+  };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault()
-      handleSendMessage(inputValue)
+      e.preventDefault();
+      handleSendMessage(inputValue);
     }
-  }
+  };
 
   return (
     <div className="bg-gradient-to-br from-gray-900/50 to-black/50 rounded-2xl border border-gray-700/50 overflow-hidden shadow-2xl">
@@ -135,7 +134,9 @@ export default function AIChatInterface() {
           </div>
           <div>
             <h3 className="text-xl font-bold">ChargedUp AI Assistant</h3>
-            <p className="text-white/80 text-sm">Powered by advanced AI for marketing excellence</p>
+            <p className="text-white/80 text-sm">
+              Powered by advanced AI for marketing excellence
+            </p>
           </div>
         </div>
       </div>
@@ -143,7 +144,7 @@ export default function AIChatInterface() {
       {/* Messages Container */}
       <div className="h-96 overflow-y-auto p-6 space-y-6">
         <AnimatePresence>
-          {messages.map((message) => (
+          {messages.map(message => (
             <motion.div
               key={message.id}
               initial={{ opacity: 0, y: 20 }}
@@ -156,22 +157,33 @@ export default function AIChatInterface() {
                   <Bot className="w-5 h-5 text-white" />
                 </div>
               )}
-              
-              <div className={`max-w-[80%] ${message.role === 'user' ? 'order-2' : 'order-1'}`}>
-                <div className={`rounded-2xl px-4 py-3 ${
-                  message.role === 'user' 
-                    ? 'bg-gradient-to-r from-orange-500 to-pink-500 text-white' 
-                    : 'bg-gray-800/50 text-gray-100 border border-gray-700/50'
-                }`}>
-                  <div className="whitespace-pre-wrap text-sm leading-relaxed">{message.content}</div>
+
+              <div
+                className={`max-w-[80%] ${message.role === 'user' ? 'order-2' : 'order-1'}`}
+              >
+                <div
+                  className={`rounded-2xl px-4 py-3 ${
+                    message.role === 'user'
+                      ? 'bg-gradient-to-r from-orange-500 to-pink-500 text-white'
+                      : 'bg-gray-800/50 text-gray-100 border border-gray-700/50'
+                  }`}
+                >
+                  <div className="whitespace-pre-wrap text-sm leading-relaxed">
+                    {message.content}
+                  </div>
                 </div>
                 <div className="flex items-center gap-2 mt-2">
                   <span className="text-xs text-gray-500">
-                    {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                    {message.timestamp.toLocaleTimeString([], {
+                      hour: '2-digit',
+                      minute: '2-digit',
+                    })}
                   </span>
                   {message.role === 'assistant' && (
                     <button
-                      onClick={() => handleCopyMessage(message.content, message.id)}
+                      onClick={() =>
+                        handleCopyMessage(message.content, message.id)
+                      }
                       className="text-gray-500 hover:text-orange-500 transition-colors duration-200"
                     >
                       {copiedId === message.id ? (
@@ -240,7 +252,7 @@ export default function AIChatInterface() {
             <textarea
               ref={inputRef}
               value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
+              onChange={e => setInputValue(e.target.value)}
               onKeyPress={handleKeyPress}
               placeholder="Ask me about marketing strategies, content ideas, or campaign optimization..."
               className="w-full bg-gray-800/50 border border-gray-700/50 rounded-xl px-4 py-3 text-gray-100 placeholder-gray-500 resize-none focus:outline-none focus:border-orange-500/50 focus:ring-1 focus:ring-orange-500/20 transition-all duration-200"
@@ -258,11 +270,14 @@ export default function AIChatInterface() {
         </div>
         <p className="text-gray-500 text-xs mt-3 text-center">
           This is a demo AI assistant. For real AI-powered marketing services,{' '}
-          <a href="/contact" className="text-orange-500 hover:text-orange-400 underline">
+          <a
+            href="/contact"
+            className="text-orange-500 hover:text-orange-400 underline"
+          >
             contact our team
           </a>
         </p>
       </div>
     </div>
-  )
+  );
 }

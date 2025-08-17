@@ -1,34 +1,34 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import { motion } from 'framer-motion'
-import { Video, Play, Download, Loader2, Sparkles } from 'lucide-react'
+import { useState } from 'react';
+import { motion } from 'framer-motion';
+import { Video, Play, Download, Loader2, Sparkles } from 'lucide-react';
 
 export default function TextToVideoPage() {
-  const [prompt, setPrompt] = useState('')
-  const [duration, setDuration] = useState('15')
-  const [style, setStyle] = useState('cinematic')
-  const [isGenerating, setIsGenerating] = useState(false)
-  const [generatedVideo, setGeneratedVideo] = useState<string | null>(null)
+  const [prompt, setPrompt] = useState('');
+  const [duration, setDuration] = useState('15');
+  const [style, setStyle] = useState('cinematic');
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [generatedVideo, setGeneratedVideo] = useState<string | null>(null);
 
   const handleGenerate = async () => {
-    if (!prompt.trim()) return
-    
-    setIsGenerating(true)
-    
+    if (!prompt.trim()) return;
+
+    setIsGenerating(true);
+
     // TODO: Replace with actual VO3 API call
     // const response = await fetch('/api/video/generate', {
     //   method: 'POST',
     //   headers: { 'Content-Type': 'application/json' },
     //   body: JSON.stringify({ prompt, duration, style })
     // })
-    
+
     // Simulate API call
     setTimeout(() => {
-      setGeneratedVideo('/api/placeholder-video')
-      setIsGenerating(false)
-    }, 3000)
-  }
+      setGeneratedVideo('/api/placeholder-video');
+      setIsGenerating(false);
+    }, 3000);
+  };
 
   return (
     <div className="flex-1 p-6">
@@ -43,9 +43,12 @@ export default function TextToVideoPage() {
             <Video className="w-4 h-4" />
             Text-to-Video AI
           </div>
-          <h1 className="text-3xl font-bold text-white mb-4">Transform Text into Stunning Videos</h1>
+          <h1 className="text-3xl font-bold text-white mb-4">
+            Transform Text into Stunning Videos
+          </h1>
           <p className="text-gray-400 text-lg">
-            Describe your vision and watch as AI brings it to life with professional-quality video content
+            Describe your vision and watch as AI brings it to life with
+            professional-quality video content
           </p>
         </motion.div>
 
@@ -58,8 +61,10 @@ export default function TextToVideoPage() {
             className="space-y-6"
           >
             <div className="bg-gray-800/50 rounded-2xl p-6 border border-gray-700/50">
-              <h2 className="text-xl font-semibold text-white mb-4">Video Generation Settings</h2>
-              
+              <h2 className="text-xl font-semibold text-white mb-4">
+                Video Generation Settings
+              </h2>
+
               {/* Prompt Input */}
               <div className="space-y-4">
                 <div>
@@ -68,7 +73,7 @@ export default function TextToVideoPage() {
                   </label>
                   <textarea
                     value={prompt}
-                    onChange={(e) => setPrompt(e.target.value)}
+                    onChange={e => setPrompt(e.target.value)}
                     placeholder="A sleek car driving through a futuristic city at sunset, cinematic lighting, smooth camera movement..."
                     className="w-full bg-gray-700/50 border border-gray-600/50 rounded-xl px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/20 transition-all duration-200"
                     rows={4}
@@ -82,7 +87,7 @@ export default function TextToVideoPage() {
                   </label>
                   <select
                     value={duration}
-                    onChange={(e) => setDuration(e.target.value)}
+                    onChange={e => setDuration(e.target.value)}
                     className="w-full bg-gray-700/50 border border-gray-600/50 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/20 transition-all duration-200"
                   >
                     <option value="15">15 seconds</option>
@@ -99,7 +104,7 @@ export default function TextToVideoPage() {
                   </label>
                   <select
                     value={style}
-                    onChange={(e) => setStyle(e.target.value)}
+                    onChange={e => setStyle(e.target.value)}
                     className="w-full bg-gray-700/50 border border-gray-600/50 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/20 transition-all duration-200"
                   >
                     <option value="cinematic">Cinematic</option>
@@ -133,7 +138,9 @@ export default function TextToVideoPage() {
 
             {/* Tips */}
             <div className="bg-gray-800/30 rounded-2xl p-6 border border-gray-700/30">
-              <h3 className="text-lg font-semibold text-white mb-3">💡 Pro Tips</h3>
+              <h3 className="text-lg font-semibold text-white mb-3">
+                💡 Pro Tips
+              </h3>
               <ul className="space-y-2 text-gray-300 text-sm">
                 <li>• Be specific about camera movements and angles</li>
                 <li>• Include lighting and mood descriptions</li>
@@ -151,14 +158,20 @@ export default function TextToVideoPage() {
             className="space-y-6"
           >
             <div className="bg-gray-800/50 rounded-2xl p-6 border border-gray-700/50">
-              <h2 className="text-xl font-semibold text-white mb-4">Video Preview</h2>
-              
+              <h2 className="text-xl font-semibold text-white mb-4">
+                Video Preview
+              </h2>
+
               {isGenerating ? (
                 <div className="aspect-video bg-gray-700/50 rounded-xl flex items-center justify-center border-2 border-dashed border-gray-600/50">
                   <div className="text-center">
                     <Loader2 className="w-12 h-12 animate-spin text-blue-400 mx-auto mb-4" />
-                    <p className="text-gray-400">AI is creating your video...</p>
-                    <p className="text-sm text-gray-500 mt-2">This may take a few minutes</p>
+                    <p className="text-gray-400">
+                      AI is creating your video...
+                    </p>
+                    <p className="text-sm text-gray-500 mt-2">
+                      This may take a few minutes
+                    </p>
                   </div>
                 </div>
               ) : generatedVideo ? (
@@ -166,7 +179,9 @@ export default function TextToVideoPage() {
                   <div className="aspect-video bg-gray-700/50 rounded-xl flex items-center justify-center border border-gray-600/50">
                     <div className="text-center">
                       <Play className="w-16 h-16 text-blue-400 mx-auto mb-4" />
-                      <p className="text-gray-400">Video Generated Successfully!</p>
+                      <p className="text-gray-400">
+                        Video Generated Successfully!
+                      </p>
                       <p className="text-sm text-gray-500">Click to preview</p>
                     </div>
                   </div>
@@ -186,7 +201,9 @@ export default function TextToVideoPage() {
                   <div className="text-center">
                     <Video className="w-16 h-16 text-gray-500 mx-auto mb-4" />
                     <p className="text-gray-400">Your video will appear here</p>
-                    <p className="text-sm text-gray-500 mt-2">Enter a prompt and click generate</p>
+                    <p className="text-sm text-gray-500 mt-2">
+                      Enter a prompt and click generate
+                    </p>
                   </div>
                 </div>
               )}
@@ -194,7 +211,9 @@ export default function TextToVideoPage() {
 
             {/* Features */}
             <div className="bg-gray-800/30 rounded-2xl p-6 border border-gray-700/30">
-              <h3 className="text-lg font-semibold text-white mb-3">🚀 Features</h3>
+              <h3 className="text-lg font-semibold text-white mb-3">
+                🚀 Features
+              </h3>
               <ul className="space-y-2 text-gray-300 text-sm">
                 <li>• AI-powered video generation</li>
                 <li>• Multiple style options</li>
@@ -207,5 +226,5 @@ export default function TextToVideoPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

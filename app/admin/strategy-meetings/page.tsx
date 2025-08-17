@@ -1,16 +1,16 @@
-'use client'
+'use client';
 
-import { useState, useEffect } from 'react'
-import { 
-  Calendar, 
-  Clock, 
-  User, 
-  Building, 
-  Mail, 
-  Phone, 
-  MessageSquare, 
-  CheckCircle, 
-  XCircle, 
+import { useState, useEffect } from 'react';
+import {
+  Calendar,
+  Clock,
+  User,
+  Building,
+  Mail,
+  Phone,
+  MessageSquare,
+  CheckCircle,
+  XCircle,
   Clock3,
   Search,
   Filter,
@@ -18,84 +18,116 @@ import {
   Eye,
   Edit,
   Send,
-  Archive
-} from 'lucide-react'
+  Archive,
+} from 'lucide-react';
 
 interface StrategyMeeting {
-  id: string
-  firstName: string
-  lastName: string
-  email: string
-  phone?: string
-  company: string
-  website?: string
-  services: string[]
-  advertisingSpend: string
-  notes?: string
-  newsletter: boolean
-  status: 'pending' | 'scheduled' | 'completed' | 'cancelled' | 'no-show'
-  submittedAt: string
-  scheduledFor?: string
-  assignedTo?: string
-  responseNotes?: string
-  source: string
-  priority: 'low' | 'medium' | 'high'
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone?: string;
+  company: string;
+  website?: string;
+  services: string[];
+  advertisingSpend: string;
+  notes?: string;
+  newsletter: boolean;
+  status: 'pending' | 'scheduled' | 'completed' | 'cancelled' | 'no-show';
+  submittedAt: string;
+  scheduledFor?: string;
+  assignedTo?: string;
+  responseNotes?: string;
+  source: string;
+  priority: 'low' | 'medium' | 'high';
 }
 
 export default function StrategyMeetings() {
-  const [meetings, setMeetings] = useState<StrategyMeeting[]>([])
-  const [activeTab, setActiveTab] = useState<'pending' | 'scheduled' | 'completed' | 'all'>('pending')
-  const [searchTerm, setSearchTerm] = useState('')
-  const [filterStatus, setFilterStatus] = useState('')
-  const [filterPriority, setFilterPriority] = useState('')
-  const [filterSource, setFilterSource] = useState('')
-  const [selectedMeeting, setSelectedMeeting] = useState<StrategyMeeting | null>(null)
-  const [showResponseModal, setShowResponseModal] = useState(false)
-  const [responseText, setResponseText] = useState('')
+  const [meetings, setMeetings] = useState<StrategyMeeting[]>([]);
+  const [activeTab, setActiveTab] = useState<
+    'pending' | 'scheduled' | 'completed' | 'all'
+  >('pending');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterStatus, setFilterStatus] = useState('');
+  const [filterPriority, setFilterPriority] = useState('');
+  const [filterSource, setFilterSource] = useState('');
+  const [selectedMeeting, setSelectedMeeting] =
+    useState<StrategyMeeting | null>(null);
+  const [showResponseModal, setShowResponseModal] = useState(false);
+  const [responseText, setResponseText] = useState('');
 
   // Mock data - replace with actual API calls
   useEffect(() => {
-    setMeetings([])
-  }, [])
+    setMeetings([]);
+  }, []);
 
   const filteredMeetings = meetings.filter(meeting => {
-    const matchesSearch = 
-      `${meeting.firstName} ${meeting.lastName}`.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    const matchesSearch =
+      `${meeting.firstName} ${meeting.lastName}`
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase()) ||
       meeting.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      meeting.company.toLowerCase().includes(searchTerm.toLowerCase())
-    
-    const matchesStatus = !filterStatus || meeting.status === filterStatus
-    const matchesPriority = !filterPriority || meeting.priority === filterPriority
-    const matchesSource = !filterSource || meeting.source === filterSource
-    
-    const matchesTab = activeTab === 'all' || meeting.status === activeTab
-    
-    return matchesSearch && matchesStatus && matchesPriority && matchesSource && matchesTab
-  })
+      meeting.company.toLowerCase().includes(searchTerm.toLowerCase());
+
+    const matchesStatus = !filterStatus || meeting.status === filterStatus;
+    const matchesPriority =
+      !filterPriority || meeting.priority === filterPriority;
+    const matchesSource = !filterSource || meeting.source === filterSource;
+
+    const matchesTab = activeTab === 'all' || meeting.status === activeTab;
+
+    return (
+      matchesSearch &&
+      matchesStatus &&
+      matchesPriority &&
+      matchesSource &&
+      matchesTab
+    );
+  });
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'pending': return 'text-yellow-400 bg-yellow-400/10'
-      case 'scheduled': return 'text-blue-400 bg-blue-400/10'
-      case 'completed': return 'text-green-400 bg-green-400/10'
-      case 'cancelled': return 'text-red-400 bg-red-400/10'
-      case 'no-show': return 'text-gray-400 bg-gray-400/10'
-      default: return 'text-gray-400 bg-gray-400/10'
+      case 'pending':
+        return 'text-yellow-400 bg-yellow-400/10';
+      case 'scheduled':
+        return 'text-blue-400 bg-blue-400/10';
+      case 'completed':
+        return 'text-green-400 bg-green-400/10';
+      case 'cancelled':
+        return 'text-red-400 bg-red-400/10';
+      case 'no-show':
+        return 'text-gray-400 bg-gray-400/10';
+      default:
+        return 'text-gray-400 bg-gray-400/10';
     }
-  }
+  };
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case 'high': return 'text-red-400 bg-red-400/10'
-      case 'medium': return 'text-yellow-400 bg-yellow-400/10'
-      case 'low': return 'text-green-400 bg-green-400/10'
-      default: return 'text-gray-400 bg-gray-400/10'
+      case 'high':
+        return 'text-red-400 bg-red-400/10';
+      case 'medium':
+        return 'text-yellow-400 bg-yellow-400/10';
+      case 'low':
+        return 'text-green-400 bg-green-400/10';
+      default:
+        return 'text-gray-400 bg-gray-400/10';
     }
-  }
+  };
 
   const exportMeetings = () => {
     const csvContent = [
-      ['Date', 'Name', 'Email', 'Company', 'Services', 'Budget', 'Status', 'Priority', 'Source'],
+      [
+        'Date',
+        'Name',
+        'Email',
+        'Company',
+        'Services',
+        'Budget',
+        'Status',
+        'Priority',
+        'Source',
+      ],
       ...filteredMeetings.map(meeting => [
         new Date(meeting.submittedAt).toLocaleDateString(),
         `"${meeting.firstName} ${meeting.lastName}"`,
@@ -105,56 +137,66 @@ export default function StrategyMeetings() {
         meeting.advertisingSpend,
         meeting.status,
         meeting.priority,
-        meeting.source
-      ])
-    ].map(row => row.map(field => `"${field}"`).join(',')).join('\n')
-    
-    const blob = new Blob([csvContent], { type: 'text/csv' })
-    const url = window.URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = `strategy-meetings-${new Date().toISOString().split('T')[0]}.csv`
-    a.click()
-    window.URL.revokeObjectURL(url)
-  }
+        meeting.source,
+      ]),
+    ]
+      .map(row => row.map(field => `"${field}"`).join(','))
+      .join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `strategy-meetings-${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+    window.URL.revokeObjectURL(url);
+  };
 
   const handleStatusChange = (meetingId: string, newStatus: string) => {
-    setMeetings(prev => prev.map(meeting => 
-      meeting.id === meetingId 
-        ? { ...meeting, status: newStatus as any }
-        : meeting
-    ))
-  }
+    setMeetings(prev =>
+      prev.map(meeting =>
+        meeting.id === meetingId
+          ? { ...meeting, status: newStatus as any }
+          : meeting
+      )
+    );
+  };
 
   const handleResponseSubmit = () => {
     if (selectedMeeting && responseText.trim()) {
-      setMeetings(prev => prev.map(meeting => 
-        meeting.id === selectedMeeting.id 
-          ? { 
-              ...meeting, 
-              responseNotes: responseText,
-              status: 'scheduled' as any,
-              assignedTo: 'current_user' // Replace with actual user ID
-            }
-          : meeting
-      ))
-      setShowResponseModal(false)
-      setResponseText('')
-      setSelectedMeeting(null)
+      setMeetings(prev =>
+        prev.map(meeting =>
+          meeting.id === selectedMeeting.id
+            ? {
+                ...meeting,
+                responseNotes: responseText,
+                status: 'scheduled' as any,
+                assignedTo: 'current_user', // Replace with actual user ID
+              }
+            : meeting
+        )
+      );
+      setShowResponseModal(false);
+      setResponseText('');
+      setSelectedMeeting(null);
     }
-  }
+  };
 
   const getTabCount = (status: string) => {
-    if (status === 'all') return meetings.length
-    return meetings.filter(m => m.status === status).length
-  }
+    if (status === 'all') return meetings.length;
+    return meetings.filter(m => m.status === status).length;
+  };
 
   return (
     <div className="p-6">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-white mb-2">Strategy Meeting Inquiries</h1>
-        <p className="text-gray-400">Manage and respond to strategy meeting requests from potential clients</p>
+        <h1 className="text-3xl font-bold text-white mb-2">
+          Strategy Meeting Inquiries
+        </h1>
+        <p className="text-gray-400">
+          Manage and respond to strategy meeting requests from potential clients
+        </p>
       </div>
 
       {/* Stats Cards */}
@@ -273,13 +315,13 @@ export default function StrategyMeetings() {
                   type="text"
                   placeholder="Search inquiries..."
                   value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
+                  onChange={e => setSearchTerm(e.target.value)}
                   className="pl-10 pr-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                 />
               </div>
               <select
                 value={filterStatus}
-                onChange={(e) => setFilterStatus(e.target.value)}
+                onChange={e => setFilterStatus(e.target.value)}
                 className="px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
               >
                 <option value="">All Statuses</option>
@@ -291,7 +333,7 @@ export default function StrategyMeetings() {
               </select>
               <select
                 value={filterPriority}
-                onChange={(e) => setFilterPriority(e.target.value)}
+                onChange={e => setFilterPriority(e.target.value)}
                 className="px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
               >
                 <option value="">All Priorities</option>
@@ -301,7 +343,7 @@ export default function StrategyMeetings() {
               </select>
               <select
                 value={filterSource}
-                onChange={(e) => setFilterSource(e.target.value)}
+                onChange={e => setFilterSource(e.target.value)}
                 className="px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
               >
                 <option value="">All Sources</option>
@@ -326,29 +368,35 @@ export default function StrategyMeetings() {
               <div className="text-center py-12">
                 <div className="text-gray-400 text-xl">No meetings found</div>
                 <p className="text-gray-500 text-sm mt-2">
-                  {searchTerm || filterStatus || filterPriority || filterSource 
-                    ? 'Try adjusting your filters' 
-                    : 'Strategy meeting requests will appear here'
-                  }
+                  {searchTerm || filterStatus || filterPriority || filterSource
+                    ? 'Try adjusting your filters'
+                    : 'Strategy meeting requests will appear here'}
                 </p>
               </div>
             ) : (
-              filteredMeetings.map((meeting) => (
-                <div key={meeting.id} className="bg-gray-700 rounded-lg p-6 border border-gray-600">
+              filteredMeetings.map(meeting => (
+                <div
+                  key={meeting.id}
+                  className="bg-gray-700 rounded-lg p-6 border border-gray-600"
+                >
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-3">
                         <h4 className="text-lg font-medium text-white">
                           {meeting.firstName} {meeting.lastName}
                         </h4>
-                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(meeting.status)}`}>
+                        <span
+                          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(meeting.status)}`}
+                        >
                           {meeting.status}
                         </span>
-                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getPriorityColor(meeting.priority)}`}>
+                        <span
+                          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getPriorityColor(meeting.priority)}`}
+                        >
                           {meeting.priority}
                         </span>
                       </div>
-                      
+
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm mb-4">
                         <div className="flex items-center gap-2">
                           <Building className="w-4 h-4 text-gray-400" />
@@ -370,16 +418,23 @@ export default function StrategyMeetings() {
                         {meeting.website && (
                           <div className="flex items-center gap-2">
                             <span className="text-gray-400">Website:</span>
-                            <span className="text-white">{meeting.website}</span>
+                            <span className="text-white">
+                              {meeting.website}
+                            </span>
                           </div>
                         )}
                       </div>
 
                       <div className="mb-4">
-                        <div className="text-sm text-gray-400 mb-2">Services of Interest:</div>
+                        <div className="text-sm text-gray-400 mb-2">
+                          Services of Interest:
+                        </div>
                         <div className="flex flex-wrap gap-2">
                           {meeting.services.map((service, index) => (
-                            <span key={index} className="px-2 py-1 bg-orange-500/20 text-orange-300 text-xs rounded">
+                            <span
+                              key={index}
+                              className="px-2 py-1 bg-orange-500/20 text-orange-300 text-xs rounded"
+                            >
                               {service}
                             </span>
                           ))}
@@ -389,35 +444,49 @@ export default function StrategyMeetings() {
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm mb-4">
                         <div>
                           <span className="text-gray-400">Budget:</span>
-                          <span className="text-white ml-2">{meeting.advertisingSpend}</span>
+                          <span className="text-white ml-2">
+                            {meeting.advertisingSpend}
+                          </span>
                         </div>
                         <div>
                           <span className="text-gray-400">Source:</span>
-                          <span className="text-white ml-2">{meeting.source}</span>
+                          <span className="text-white ml-2">
+                            {meeting.source}
+                          </span>
                         </div>
                         <div>
                           <span className="text-gray-400">Submitted:</span>
-                          <span className="text-white ml-2">{new Date(meeting.submittedAt).toLocaleDateString()}</span>
+                          <span className="text-white ml-2">
+                            {new Date(meeting.submittedAt).toLocaleDateString()}
+                          </span>
                         </div>
                       </div>
 
                       {meeting.notes && (
                         <div className="mb-4">
-                          <div className="text-sm text-gray-400 mb-2">Notes:</div>
+                          <div className="text-sm text-gray-400 mb-2">
+                            Notes:
+                          </div>
                           <p className="text-white text-sm">{meeting.notes}</p>
                         </div>
                       )}
 
                       {meeting.responseNotes && (
                         <div className="mb-4">
-                          <div className="text-sm text-gray-400 mb-2">Response Notes:</div>
-                          <p className="text-white text-sm">{meeting.responseNotes}</p>
+                          <div className="text-sm text-gray-400 mb-2">
+                            Response Notes:
+                          </div>
+                          <p className="text-white text-sm">
+                            {meeting.responseNotes}
+                          </p>
                         </div>
                       )}
 
                       {meeting.scheduledFor && (
                         <div className="mb-4">
-                          <div className="text-sm text-gray-400 mb-2">Scheduled For:</div>
+                          <div className="text-sm text-gray-400 mb-2">
+                            Scheduled For:
+                          </div>
                           <p className="text-white text-sm">
                             {new Date(meeting.scheduledFor).toLocaleString()}
                           </p>
@@ -428,8 +497,8 @@ export default function StrategyMeetings() {
                     <div className="flex flex-col gap-2 ml-4">
                       <button
                         onClick={() => {
-                          setSelectedMeeting(meeting)
-                          setShowResponseModal(true)
+                          setSelectedMeeting(meeting);
+                          setShowResponseModal(true);
                         }}
                         className="px-3 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg transition-colors text-sm flex items-center"
                         disabled={meeting.status === 'completed'}
@@ -437,10 +506,12 @@ export default function StrategyMeetings() {
                         <MessageSquare className="w-4 h-4 mr-2" />
                         {meeting.status === 'pending' ? 'Respond' : 'Update'}
                       </button>
-                      
+
                       <select
                         value={meeting.status}
-                        onChange={(e) => handleStatusChange(meeting.id, e.target.value)}
+                        onChange={e =>
+                          handleStatusChange(meeting.id, e.target.value)
+                        }
                         className="px-3 py-2 bg-gray-600 border border-gray-500 rounded-lg text-white text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
                       >
                         <option value="pending">Pending</option>
@@ -465,14 +536,14 @@ export default function StrategyMeetings() {
             <h3 className="text-lg font-medium text-white mb-4">
               Respond to {selectedMeeting.firstName} {selectedMeeting.lastName}
             </h3>
-            
+
             <div className="mb-4">
               <label className="block text-sm font-medium text-gray-300 mb-2">
                 Response Notes
               </label>
               <textarea
                 value={responseText}
-                onChange={(e) => setResponseText(e.target.value)}
+                onChange={e => setResponseText(e.target.value)}
                 placeholder="Enter your response, meeting details, or next steps..."
                 rows={4}
                 className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
@@ -490,9 +561,9 @@ export default function StrategyMeetings() {
               </button>
               <button
                 onClick={() => {
-                  setShowResponseModal(false)
-                  setResponseText('')
-                  setSelectedMeeting(null)
+                  setShowResponseModal(false);
+                  setResponseText('');
+                  setSelectedMeeting(null);
                 }}
                 className="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors"
               >
@@ -503,5 +574,5 @@ export default function StrategyMeetings() {
         </div>
       )}
     </div>
-  )
+  );
 }

@@ -1,8 +1,8 @@
-'use client'
+'use client';
 
-import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
-import { motion, AnimatePresence } from 'framer-motion'
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   MessageSquare,
   Video,
@@ -14,9 +14,9 @@ import {
   Plus,
   LogOut,
   User,
-  Zap
-} from 'lucide-react'
-import Link from 'next/link'
+  Zap,
+} from 'lucide-react';
+import Link from 'next/link';
 
 const sidebarItems = [
   {
@@ -24,62 +24,62 @@ const sidebarItems = [
     label: 'OpenAI Chat',
     icon: MessageSquare,
     href: '/dashboard/simple-page',
-    description: 'AI-powered conversations'
+    description: 'AI-powered conversations',
   },
   {
     id: 'text-to-video',
     label: 'Text-to-Video AI',
     icon: Video,
     href: '/dashboard/text-to-video',
-    description: 'Generate videos from text'
+    description: 'Generate videos from text',
   },
   {
     id: 'photo-to-video',
     label: 'Photo-to-Video AI',
     icon: Image,
     href: '/dashboard/photo-to-video',
-    description: 'Transform photos to videos'
+    description: 'Transform photos to videos',
   },
   {
     id: 'profile',
     label: 'Profile Settings',
     icon: User,
     href: '/dashboard/profile',
-    description: 'Manage your account'
-  }
-]
+    description: 'Manage your account',
+  },
+];
 
 export default function SimpleDashboardLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
-  const router = useRouter()
-  const [user, setUser] = useState<any>(null)
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true)
-  const [isMobile, setIsMobile] = useState(false)
+  const router = useRouter();
+  const [user, setUser] = useState<any>(null);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768)
-      setIsSidebarOpen(window.innerWidth >= 768)
-    }
+      setIsMobile(window.innerWidth < 768);
+      setIsSidebarOpen(window.innerWidth >= 768);
+    };
 
-    checkMobile()
-    window.addEventListener('resize', checkMobile)
-    return () => window.removeEventListener('resize', checkMobile)
-  }, [])
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   useEffect(() => {
     // Check if user is logged in
-    const userData = localStorage.getItem('user')
+    const userData = localStorage.getItem('user');
     if (!userData) {
-      router.push('/auth/login')
-      return
+      router.push('/auth/login');
+      return;
     }
-    
-    setUser(JSON.parse(userData))
-  }, [router])
+
+    setUser(JSON.parse(userData));
+  }, [router]);
 
   if (!user) {
     return (
@@ -89,13 +89,13 @@ export default function SimpleDashboardLayout({
           <p className="text-white text-lg">Loading...</p>
         </div>
       </div>
-    )
+    );
   }
 
   const handleSignOut = () => {
-    localStorage.removeItem('user')
-    router.push('/auth/login')
-  }
+    localStorage.removeItem('user');
+    router.push('/auth/login');
+  };
 
   return (
     <div className="min-h-screen bg-gray-900 text-white">
@@ -104,7 +104,11 @@ export default function SimpleDashboardLayout({
         className="md:hidden fixed top-4 left-4 z-50 p-2 bg-gray-800 rounded-lg"
         onClick={() => setIsSidebarOpen(!isSidebarOpen)}
       >
-        {isSidebarOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+        {isSidebarOpen ? (
+          <X className="w-6 h-6" />
+        ) : (
+          <Menu className="w-6 h-6" />
+        )}
       </button>
 
       {/* Sidebar */}
@@ -128,7 +132,7 @@ export default function SimpleDashboardLayout({
                     <p className="text-sm text-gray-400">AI Platform</p>
                   </div>
                 </div>
-                
+
                 {/* User Info */}
                 <div className="bg-gray-700/50 rounded-lg p-4">
                   <div className="flex items-center gap-3 mb-2">
@@ -142,11 +146,15 @@ export default function SimpleDashboardLayout({
                   </div>
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-gray-400">Credits:</span>
-                    <span className="font-medium text-orange-400">{user.credits}</span>
+                    <span className="font-medium text-orange-400">
+                      {user.credits}
+                    </span>
                   </div>
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-gray-400">Role:</span>
-                    <span className={`font-medium ${user.role === 'ADMIN' ? 'text-purple-400' : 'text-blue-400'}`}>
+                    <span
+                      className={`font-medium ${user.role === 'ADMIN' ? 'text-purple-400' : 'text-blue-400'}`}
+                    >
                       {user.role}
                     </span>
                   </div>
@@ -155,7 +163,7 @@ export default function SimpleDashboardLayout({
 
               {/* Navigation */}
               <nav className="flex-1 p-4 space-y-2">
-                {sidebarItems.map((item) => (
+                {sidebarItems.map(item => (
                   <Link
                     key={item.id}
                     href={item.href}
@@ -164,11 +172,13 @@ export default function SimpleDashboardLayout({
                     <item.icon className="w-5 h-5 text-gray-400 group-hover:text-orange-400" />
                     <div className="flex-1">
                       <div className="font-medium">{item.label}</div>
-                      <div className="text-sm text-gray-500">{item.description}</div>
+                      <div className="text-sm text-gray-500">
+                        {item.description}
+                      </div>
                     </div>
                   </Link>
                 ))}
-                
+
                 {/* Admin Panel (only for admin users) */}
                 {user.role === 'ADMIN' && (
                   <Link
@@ -178,7 +188,9 @@ export default function SimpleDashboardLayout({
                     <Shield className="w-5 h-5 text-gray-400 group-hover:text-purple-400" />
                     <div className="flex-1">
                       <div className="font-medium">Admin Panel</div>
-                      <div className="text-sm text-gray-500">Manage users & system</div>
+                      <div className="text-sm text-gray-500">
+                        Manage users & system
+                      </div>
                     </div>
                   </Link>
                 )}
@@ -200,7 +212,9 @@ export default function SimpleDashboardLayout({
       </AnimatePresence>
 
       {/* Main Content */}
-      <div className={`transition-all duration-300 ${isSidebarOpen ? 'md:ml-80' : ''}`}>
+      <div
+        className={`transition-all duration-300 ${isSidebarOpen ? 'md:ml-80' : ''}`}
+      >
         {children}
       </div>
 
@@ -215,5 +229,5 @@ export default function SimpleDashboardLayout({
         />
       )}
     </div>
-  )
+  );
 }

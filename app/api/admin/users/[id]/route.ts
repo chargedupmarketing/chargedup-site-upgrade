@@ -1,19 +1,22 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { getServerSession } from 'next-auth'
-import { prisma } from '@/lib/prisma'
+import { NextRequest, NextResponse } from 'next/server';
+import { getServerSession } from 'next-auth';
+import { prisma } from '@/lib/prisma';
 
 export async function PATCH(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
-    const session = await getServerSession()
+    const session = await getServerSession();
     if (!session?.user || session.user.role !== 'ADMIN') {
-      return NextResponse.json({ error: 'Admin access required' }, { status: 403 })
+      return NextResponse.json(
+        { error: 'Admin access required' },
+        { status: 403 }
+      );
     }
 
-    const userId = params.id
-    const { isActive } = await request.json()
+    const userId = params.id;
+    const { isActive } = await request.json();
 
     const user = await prisma.user.update({
       where: { id: userId },
@@ -27,16 +30,16 @@ export async function PATCH(
         isActive: true,
         createdAt: true,
         updatedAt: true,
-      }
-    })
+      },
+    });
 
-    return NextResponse.json({ user })
+    return NextResponse.json({ user });
   } catch (error) {
-    console.error('Failed to update user:', error)
+    console.error('Failed to update user:', error);
     return NextResponse.json(
       { error: 'Failed to update user' },
       { status: 500 }
-    )
+    );
   }
 }
 
@@ -45,37 +48,40 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
-    const session = await getServerSession()
+    const session = await getServerSession();
     if (!session?.user || session.user.role !== 'ADMIN') {
-      return NextResponse.json({ error: 'Admin access required' }, { status: 403 })
+      return NextResponse.json(
+        { error: 'Admin access required' },
+        { status: 403 }
+      );
     }
 
-    const userId = params.id
+    const userId = params.id;
 
     // Check if user is admin
     const user = await prisma.user.findUnique({
-      where: { id: userId }
-    })
+      where: { id: userId },
+    });
 
     if (user?.role === 'ADMIN') {
       return NextResponse.json(
         { error: 'Cannot delete admin users' },
         { status: 400 }
-      )
+      );
     }
 
     // Soft delete by setting isActive to false
     await prisma.user.update({
       where: { id: userId },
-      data: { isActive: false }
-    })
+      data: { isActive: false },
+    });
 
-    return NextResponse.json({ message: 'User deleted successfully' })
+    return NextResponse.json({ message: 'User deleted successfully' });
   } catch (error) {
-    console.error('Failed to delete user:', error)
+    console.error('Failed to delete user:', error);
     return NextResponse.json(
       { error: 'Failed to delete user' },
       { status: 500 }
-    )
+    );
   }
 }

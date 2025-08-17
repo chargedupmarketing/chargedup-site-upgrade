@@ -1,62 +1,70 @@
-'use client'
+'use client';
 
-import { useState, useRef } from 'react'
-import { motion } from 'framer-motion'
-import { Image, Upload, Play, Download, Loader2, Sparkles, X } from 'lucide-react'
+import { useState, useRef } from 'react';
+import { motion } from 'framer-motion';
+import {
+  Image,
+  Upload,
+  Play,
+  Download,
+  Loader2,
+  Sparkles,
+  X,
+} from 'lucide-react';
 
 export default function PhotoToVideoPage() {
-  const [selectedImage, setSelectedImage] = useState<File | null>(null)
-  const [imagePreview, setImagePreview] = useState<string | null>(null)
-  const [animationStyle, setAnimationStyle] = useState('smooth')
-  const [duration, setDuration] = useState('10')
-  const [isGenerating, setIsGenerating] = useState(false)
-  const [generatedVideo, setGeneratedVideo] = useState<string | null>(null)
-  const fileInputRef = useRef<HTMLInputElement>(null)
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [animationStyle, setAnimationStyle] = useState('smooth');
+  const [duration, setDuration] = useState('10');
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [generatedVideo, setGeneratedVideo] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0]
+    const file = event.target.files?.[0];
     if (file && file.type.startsWith('image/')) {
-      setSelectedImage(file)
-      const reader = new FileReader()
-      reader.onload = (e) => setImagePreview(e.target?.result as string)
-      reader.readAsDataURL(file)
+      setSelectedImage(file);
+      const reader = new FileReader();
+      reader.onload = e => setImagePreview(e.target?.result as string);
+      reader.readAsDataURL(file);
     }
-  }
+  };
 
   const removeImage = () => {
-    setSelectedImage(null)
-    setImagePreview(null)
+    setSelectedImage(null);
+    setImagePreview(null);
     if (fileInputRef.current) {
-      fileInputRef.current.value = ''
+      fileInputRef.current.value = '';
     }
-  }
+  };
 
   const handleGenerate = async () => {
-    if (!selectedImage) return
-    
-    setIsGenerating(true)
-    
+    if (!selectedImage) return;
+
+    setIsGenerating(true);
+
     // TODO: Replace with actual API call
     // const formData = new FormData()
     // formData.append('image', selectedImage)
     // formData.append('animationStyle', animationStyle)
     // formData.append('duration', duration)
-    
+
     // const response = await fetch('/api/video/photo-to-video', {
     //   method: 'POST',
     //   body: formData
     // })
-    
+
     // Simulate API call
     setTimeout(() => {
-      setGeneratedVideo('/api/placeholder-video')
-      setIsGenerating(false)
-    }, 3000)
-  }
+      setGeneratedVideo('/api/placeholder-video');
+      setIsGenerating(false);
+    }, 3000);
+  };
 
   const triggerFileUpload = () => {
-    fileInputRef.current?.click()
-  }
+    fileInputRef.current?.click();
+  };
 
   return (
     <div className="flex-1 p-6">
@@ -71,9 +79,12 @@ export default function PhotoToVideoPage() {
             <Image className="w-4 h-4" />
             Photo-to-Video AI
           </div>
-          <h1 className="text-3xl font-bold text-white mb-4">Transform Photos into Dynamic Videos</h1>
+          <h1 className="text-3xl font-bold text-white mb-4">
+            Transform Photos into Dynamic Videos
+          </h1>
           <p className="text-gray-400 text-lg">
-            Upload any photo and watch as AI brings it to life with stunning animations and effects
+            Upload any photo and watch as AI brings it to life with stunning
+            animations and effects
           </p>
         </motion.div>
 
@@ -86,23 +97,29 @@ export default function PhotoToVideoPage() {
             className="space-y-6"
           >
             <div className="bg-gray-800/50 rounded-2xl p-6 border border-gray-700/50">
-              <h2 className="text-xl font-semibold text-white mb-4">Video Generation Settings</h2>
-              
+              <h2 className="text-xl font-semibold text-white mb-4">
+                Video Generation Settings
+              </h2>
+
               {/* Image Upload */}
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-300 mb-2">
                     Upload Photo
                   </label>
-                  
+
                   {!imagePreview ? (
                     <div
                       onClick={triggerFileUpload}
                       className="w-full h-48 border-2 border-dashed border-gray-600/50 rounded-xl flex flex-col items-center justify-center cursor-pointer hover:border-gray-500/50 transition-colors"
                     >
                       <Upload className="w-12 h-12 text-gray-500 mb-3" />
-                      <p className="text-gray-400 font-medium">Click to upload or drag & drop</p>
-                      <p className="text-gray-500 text-sm mt-1">Supports JPG, PNG, WebP (Max 10MB)</p>
+                      <p className="text-gray-400 font-medium">
+                        Click to upload or drag & drop
+                      </p>
+                      <p className="text-gray-500 text-sm mt-1">
+                        Supports JPG, PNG, WebP (Max 10MB)
+                      </p>
                     </div>
                   ) : (
                     <div className="relative">
@@ -119,7 +136,7 @@ export default function PhotoToVideoPage() {
                       </button>
                     </div>
                   )}
-                  
+
                   <input
                     ref={fileInputRef}
                     type="file"
@@ -136,7 +153,7 @@ export default function PhotoToVideoPage() {
                   </label>
                   <select
                     value={animationStyle}
-                    onChange={(e) => setAnimationStyle(e.target.value)}
+                    onChange={e => setAnimationStyle(e.target.value)}
                     className="w-full bg-gray-700/50 border border-gray-600/50 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-green-500/50 focus:ring-1 focus:ring-green-500/20 transition-all duration-200"
                   >
                     <option value="smooth">Smooth & Elegant</option>
@@ -154,7 +171,7 @@ export default function PhotoToVideoPage() {
                   </label>
                   <select
                     value={duration}
-                    onChange={(e) => setDuration(e.target.value)}
+                    onChange={e => setDuration(e.target.value)}
                     className="w-full bg-gray-700/50 border border-gray-600/50 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-green-500/50 focus:ring-1 focus:ring-green-500/20 transition-all duration-200"
                   >
                     <option value="5">5 seconds</option>
@@ -188,7 +205,9 @@ export default function PhotoToVideoPage() {
 
             {/* Tips */}
             <div className="bg-gray-800/30 rounded-2xl p-6 border border-gray-700/30">
-              <h3 className="text-lg font-semibold text-white mb-3">💡 Pro Tips</h3>
+              <h3 className="text-lg font-semibold text-white mb-3">
+                💡 Pro Tips
+              </h3>
               <ul className="space-y-2 text-gray-300 text-sm">
                 <li>• Use high-quality, clear images for best results</li>
                 <li>• Images with good contrast work better</li>
@@ -206,14 +225,20 @@ export default function PhotoToVideoPage() {
             className="space-y-6"
           >
             <div className="bg-gray-800/50 rounded-2xl p-6 border border-gray-700/50">
-              <h2 className="text-xl font-semibold text-white mb-4">Video Preview</h2>
-              
+              <h2 className="text-xl font-semibold text-white mb-4">
+                Video Preview
+              </h2>
+
               {isGenerating ? (
                 <div className="aspect-video bg-gray-700/50 rounded-xl flex items-center justify-center border-2 border-dashed border-gray-600/50">
                   <div className="text-center">
                     <Loader2 className="w-12 h-12 animate-spin text-green-400 mx-auto mb-4" />
-                    <p className="text-gray-400">AI is animating your photo...</p>
-                    <p className="text-sm text-gray-500 mt-2">This may take a few minutes</p>
+                    <p className="text-gray-400">
+                      AI is animating your photo...
+                    </p>
+                    <p className="text-sm text-gray-500 mt-2">
+                      This may take a few minutes
+                    </p>
                   </div>
                 </div>
               ) : generatedVideo ? (
@@ -221,7 +246,9 @@ export default function PhotoToVideoPage() {
                   <div className="aspect-video bg-gray-700/50 rounded-xl flex items-center justify-center border border-gray-600/50">
                     <div className="text-center">
                       <Play className="w-16 h-16 text-green-400 mx-auto mb-4" />
-                      <p className="text-gray-400">Video Generated Successfully!</p>
+                      <p className="text-gray-400">
+                        Video Generated Successfully!
+                      </p>
                       <p className="text-sm text-gray-500">Click to preview</p>
                     </div>
                   </div>
@@ -241,7 +268,9 @@ export default function PhotoToVideoPage() {
                   <div className="text-center">
                     <Image className="w-16 h-16 text-gray-500 mx-auto mb-4" />
                     <p className="text-gray-400">Your video will appear here</p>
-                    <p className="text-sm text-gray-500 mt-2">Upload a photo and click generate</p>
+                    <p className="text-sm text-gray-500 mt-2">
+                      Upload a photo and click generate
+                    </p>
                   </div>
                 </div>
               )}
@@ -249,7 +278,9 @@ export default function PhotoToVideoPage() {
 
             {/* Features */}
             <div className="bg-gray-800/30 rounded-2xl p-6 border border-gray-700/30">
-              <h3 className="text-lg font-semibold text-white mb-3">🚀 Features</h3>
+              <h3 className="text-lg font-semibold text-white mb-3">
+                🚀 Features
+              </h3>
               <ul className="space-y-2 text-gray-300 text-sm">
                 <li>• AI-powered photo animation</li>
                 <li>• Multiple animation styles</li>
@@ -262,5 +293,5 @@ export default function PhotoToVideoPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

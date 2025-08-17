@@ -1,45 +1,45 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { getServerSession } from 'next-auth'
-import { prisma } from '@/lib/prisma'
+import { NextRequest, NextResponse } from 'next/server';
+import { getServerSession } from 'next-auth';
+import { prisma } from '@/lib/prisma';
 
 export async function GET() {
   try {
-    const session = await getServerSession()
+    const session = await getServerSession();
     if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const chats = await prisma.chat.findMany({
       where: {
         userId: session.user.id,
-        isActive: true
+        isActive: true,
       },
       include: {
         messages: {
-          orderBy: { createdAt: 'asc' }
-        }
+          orderBy: { createdAt: 'asc' },
+        },
       },
-      orderBy: { updatedAt: 'desc' }
-    })
+      orderBy: { updatedAt: 'desc' },
+    });
 
-    return NextResponse.json({ chats })
+    return NextResponse.json({ chats });
   } catch (error) {
-    console.error('Failed to fetch chats:', error)
+    console.error('Failed to fetch chats:', error);
     return NextResponse.json(
       { error: 'Failed to fetch chats' },
       { status: 500 }
-    )
+    );
   }
 }
 
 export async function POST(request: NextRequest) {
   try {
-    const session = await getServerSession()
+    const session = await getServerSession();
     if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const chatData = await request.json()
+    const chatData = await request.json();
 
     // Create new chat
     const chat = await prisma.chat.create({
@@ -49,21 +49,21 @@ export async function POST(request: NextRequest) {
         messages: {
           create: chatData.messages.map((msg: any) => ({
             content: msg.content,
-            role: msg.role === 'user' ? 'USER' : 'ASSISTANT'
-          }))
-        }
+            role: msg.role === 'user' ? 'USER' : 'ASSISTANT',
+          })),
+        },
       },
       include: {
-        messages: true
-      }
-    })
+        messages: true,
+      },
+    });
 
-    return NextResponse.json({ chat }, { status: 201 })
+    return NextResponse.json({ chat }, { status: 201 });
   } catch (error) {
-    console.error('Failed to create chat:', error)
+    console.error('Failed to create chat:', error);
     return NextResponse.json(
       { error: 'Failed to create chat' },
       { status: 500 }
-    )
+    );
   }
 }

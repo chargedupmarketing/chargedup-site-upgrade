@@ -34,11 +34,13 @@
 ## 🔧 **Troubleshooting**
 
 **If you get authentication errors:**
+
 - Check your PAT is correct in `.env.local`
 - Ensure the PAT has the right permissions
 - Restart the development server
 
 **If responses are slow:**
+
 - This is normal for the first few requests
 - Clarifai will cache and speed up subsequent calls
 

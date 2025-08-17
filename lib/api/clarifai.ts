@@ -1,7 +1,7 @@
 // TODO: Fix Clarifai integration - package structure has changed
 export interface ClarifaiConfig {
-  apiKey: string
-  modelId?: string
+  apiKey: string;
+  modelId?: string;
 }
 
 export class ClarifaiClient {
@@ -9,13 +9,13 @@ export class ClarifaiClient {
     // Placeholder implementation
   }
 
-  async generateText(prompt: string, modelId: string = "text-generation") {
+  async generateText(prompt: string, modelId: string = 'text-generation') {
     // Placeholder implementation
-    throw new Error('Clarifai integration not yet implemented')
+    throw new Error('Clarifai integration not yet implemented');
   }
 
-  async generateImage(prompt: string, modelId: string = "image-generation") {
+  async generateImage(prompt: string, modelId: string = 'image-generation') {
     // Placeholder implementation
-    throw new Error('Clarifai integration not yet implemented')
+    throw new Error('Clarifai integration not yet implemented');
   }
 }

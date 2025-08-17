@@ -1,19 +1,19 @@
-'use client'
+'use client';
 
-import Link from 'next/link'
-import { useEffect } from 'react'
+import Link from 'next/link';
+import { useEffect } from 'react';
 
 export default function GlobalError({
   error,
   reset,
 }: {
-  error: Error & { digest?: string }
-  reset: () => void
+  error: Error & { digest?: string };
+  reset: () => void;
 }) {
   useEffect(() => {
     // Log the error to an error reporting service
-    console.error('Global error:', error)
-  }, [error])
+    console.error('Global error:', error);
+  }, [error]);
 
   return (
     <html>
@@ -22,12 +22,12 @@ export default function GlobalError({
           <div className="container max-w-2xl text-center">
             {/* Error Icon */}
             <div className="mb-8">
-              <svg 
+              <svg
                 className="w-24 h-24 text-red-500 mx-auto"
-                viewBox="0 0 24 24" 
+                viewBox="0 0 24 24"
                 fill="currentColor"
               >
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
               </svg>
             </div>
 
@@ -35,25 +35,20 @@ export default function GlobalError({
             <h1 className="h1 mb-6">
               Something went <span className="text-red-500">wrong</span>
             </h1>
-            
+
             <p className="p text-lg mb-8 max-w-lg mx-auto">
-              We're experiencing some technical difficulties. Don't worry, our team has been notified 
-              and is working to get everything back up and running smoothly.
+              We&apos;re experiencing some technical difficulties. Don&apos;t
+              worry, our team has been notified and is working to get everything
+              back up and running smoothly.
             </p>
 
             {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
-              <button 
-                onClick={reset}
-                className="btn-primary"
-              >
+              <button onClick={reset} className="btn-primary">
                 Try Again
               </button>
-              
-              <Link 
-                href="/" 
-                className="btn-outline"
-              >
+
+              <Link href="/" className="btn-outline">
                 ⚡ Back to Home
               </Link>
             </div>
@@ -64,8 +59,8 @@ export default function GlobalError({
               <p className="p mb-4">
                 Our support team is here to help you get back on track.
               </p>
-              <Link 
-                href="/contact" 
+              <Link
+                href="/contact"
                 className="text-[#fcb80a] hover:text-[#fc5f17] transition-colors font-medium"
               >
                 Contact Support →
@@ -88,5 +83,5 @@ export default function GlobalError({
         </div>
       </body>
     </html>
-  )
+  );
 }

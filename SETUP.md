@@ -5,6 +5,7 @@ Welcome to your new AI-powered platform! This guide will walk you through settin
 ## 📋 Prerequisites
 
 Before you begin, make sure you have:
+
 - Node.js 18+ installed
 - PostgreSQL database (local or cloud)
 - OpenAI API key
@@ -13,6 +14,7 @@ Before you begin, make sure you have:
 ## 🗄️ Database Setup
 
 ### Option 1: Local PostgreSQL
+
 1. Install PostgreSQL on your machine
 2. Create a new database:
    ```sql
@@ -20,6 +22,7 @@ Before you begin, make sure you have:
    ```
 
 ### Option 2: Supabase (Recommended)
+
 1. Go to [supabase.com](https://supabase.com)
 2. Create a new project
 3. Get your database connection string from Settings > Database
@@ -27,19 +30,21 @@ Before you begin, make sure you have:
 ## 🔑 Environment Configuration
 
 1. Copy the environment template:
+
    ```bash
    cp env.example .env.local
    ```
 
 2. Edit `.env.local` with your actual values:
+
    ```env
    # Database
    DATABASE_URL="postgresql://username:password@localhost:5432/chargedup_ai"
-   
+
    # NextAuth
    NEXTAUTH_SECRET="generate-a-random-32-character-string"
    NEXTAUTH_URL="http://localhost:3001"
-   
+
    # OpenAI
    OPENAI_API_KEY="sk-your_actual_openai_key"
    ```
@@ -52,20 +57,24 @@ Before you begin, make sure you have:
 ## 🚀 Installation & Setup
 
 1. Install dependencies:
+
    ```bash
    npm install
    ```
 
 2. Set up the database:
+
    ```bash
    npx prisma generate
    npx prisma db push
    ```
 
 3. Create an admin user:
+
    ```bash
    npx prisma studio
    ```
+
    - Open the browser window
    - Go to the User table
    - Create a new user with role "ADMIN"
@@ -86,6 +95,7 @@ Before you begin, make sure you have:
 ## 🔐 Default Admin Account
 
 After setup, you can use these credentials:
+
 - **Email**: admin@chargedup.com
 - **Password**: admin123
 
@@ -94,18 +104,21 @@ After setup, you can use these credentials:
 ## 🏗️ System Architecture
 
 ### Frontend
+
 - **Next.js 14** with App Router
 - **Tailwind CSS** for styling
 - **Framer Motion** for animations
 - **Lucide React** for icons
 
 ### Backend
+
 - **Next.js API Routes**
 - **Prisma ORM** for database
 - **NextAuth.js** for authentication
 - **OpenAI API** integration
 
 ### Database Models
+
 - **Users**: Authentication and profiles
 - **Chats**: AI conversation history
 - **Messages**: Individual chat messages
@@ -115,6 +128,7 @@ After setup, you can use these credentials:
 ## 🎨 Features Overview
 
 ### ✅ Currently Working
+
 - User authentication (login/register)
 - Admin dashboard with user management
 - OpenAI chat interface
@@ -123,6 +137,7 @@ After setup, you can use these credentials:
 - Responsive design
 
 ### 🚧 Coming Soon
+
 - Text-to-video generation
 - Photo-to-video conversion
 - Advanced admin analytics
@@ -132,7 +147,9 @@ After setup, you can use these credentials:
 ## 🔧 Customization
 
 ### AI Behavior
+
 Modify the AI personality in `app/api/chat/route.ts`:
+
 ```typescript
 {
   role: 'system',
@@ -141,12 +158,15 @@ Modify the AI personality in `app/api/chat/route.ts`:
 ```
 
 ### Styling
+
 - Colors: Edit `tailwind.config.js`
 - Components: Modify files in `components/` folder
 - Pages: Customize files in `app/` folder
 
 ### Database Schema
+
 Update `prisma/schema.prisma` and run:
+
 ```bash
 npx prisma db push
 ```
@@ -185,12 +205,14 @@ npx prisma db push
 ## 🚀 Deployment
 
 ### Vercel (Recommended)
+
 1. Push your code to GitHub
 2. Connect your repository to Vercel
 3. Set environment variables in Vercel dashboard
 4. Deploy!
 
 ### Other Platforms
+
 - **Netlify**: Similar to Vercel
 - **Railway**: Good for full-stack apps
 - **DigitalOcean**: More control, requires server management
@@ -198,12 +220,14 @@ npx prisma db push
 ## 📊 Monitoring & Analytics
 
 ### Built-in Features
+
 - User activity tracking
 - Credit usage monitoring
 - Chat history analytics
 - System performance metrics
 
 ### Future Additions
+
 - Google Analytics integration
 - Custom event tracking
 - Performance monitoring
@@ -221,11 +245,13 @@ npx prisma db push
 ## 💰 Cost Management
 
 ### OpenAI API
+
 - **gpt-4o-mini**: ~$0.15 per 1M input tokens
 - **gpt-4**: ~$30 per 1M input tokens
 - Monitor usage in OpenAI dashboard
 
 ### Database
+
 - **Supabase**: Free tier available
 - **Local**: No additional cost
 - **Cloud**: Varies by provider
@@ -241,6 +267,7 @@ npx prisma db push
 ## 📞 Support
 
 If you need help:
+
 1. Check this documentation first
 2. Review the code comments
 3. Check GitHub issues

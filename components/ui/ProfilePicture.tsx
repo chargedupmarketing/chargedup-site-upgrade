@@ -1,70 +1,70 @@
-'use client'
+'use client';
 
-import { useState, useRef } from 'react'
-import { Camera, Upload, X, User } from 'lucide-react'
+import { useState, useRef } from 'react';
+import { Camera, Upload, X, User } from 'lucide-react';
 
 interface ProfilePictureProps {
-  currentImage?: string | null
-  onImageChange: (file: File) => void
-  size?: 'sm' | 'md' | 'lg'
-  className?: string
+  currentImage?: string | null;
+  onImageChange: (file: File) => void;
+  size?: 'sm' | 'md' | 'lg';
+  className?: string;
 }
 
-export default function ProfilePicture({ 
-  currentImage, 
-  onImageChange, 
+export default function ProfilePicture({
+  currentImage,
+  onImageChange,
   size = 'md',
-  className = '' 
+  className = '',
 }: ProfilePictureProps) {
-  const [isHovered, setIsHovered] = useState(false)
-  const [isUploading, setIsUploading] = useState(false)
-  const fileInputRef = useRef<HTMLInputElement>(null)
+  const [isHovered, setIsHovered] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const sizeClasses = {
     sm: 'w-16 h-16',
     md: 'w-24 h-24',
-    lg: 'w-32 h-32'
-  }
+    lg: 'w-32 h-32',
+  };
 
   const iconSizes = {
     sm: 'w-6 h-6',
     md: 'w-8 h-8',
-    lg: 'w-12 h-12'
-  }
+    lg: 'w-12 h-12',
+  };
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0]
+    const file = event.target.files?.[0];
     if (file) {
       // Validate file type
       if (!file.type.startsWith('image/')) {
-        alert('Please select an image file')
-        return
+        alert('Please select an image file');
+        return;
       }
-      
+
       // Validate file size (max 5MB)
       if (file.size > 5 * 1024 * 1024) {
-        alert('Image size must be less than 5MB')
-        return
+        alert('Image size must be less than 5MB');
+        return;
       }
 
-      setIsUploading(true)
-      
+      setIsUploading(true);
+
       // Simulate upload delay
       setTimeout(() => {
-        onImageChange(file)
-        setIsUploading(false)
-      }, 1000)
+        onImageChange(file);
+        setIsUploading(false);
+      }, 1000);
     }
-  }
+  };
 
   const handleClick = () => {
-    fileInputRef.current?.click()
-  }
+    fileInputRef.current?.click();
+  };
 
   const removeImage = (e: React.MouseEvent) => {
-    e.stopPropagation()
-    onImageChange(null as any)
-  }
+    e.stopPropagation();
+    onImageChange(null as any);
+  };
 
   return (
     <div className={`relative group ${className}`}>
@@ -91,7 +91,9 @@ export default function ProfilePicture({
         {isHovered && !isUploading && (
           <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
             <div className="text-center">
-              <Upload className={`${iconSizes[size]} text-white mx-auto mb-1`} />
+              <Upload
+                className={`${iconSizes[size]} text-white mx-auto mb-1`}
+              />
               <p className="text-white text-xs">Click to upload</p>
             </div>
           </div>
@@ -132,5 +134,5 @@ export default function ProfilePicture({
         className="hidden"
       />
     </div>
-  )
+  );
 }

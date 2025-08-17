@@ -1,22 +1,22 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import Link from 'next/link'
-import { motion } from 'framer-motion'
-import { Zap, Mail, Lock, ArrowRight, Sparkles, Shield } from 'lucide-react'
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { motion } from 'framer-motion';
+import { Zap, Mail, Lock, ArrowRight, Sparkles, Shield } from 'lucide-react';
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState('')
-  const router = useRouter()
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsLoading(true)
-    setError('')
+    e.preventDefault();
+    setIsLoading(true);
+    setError('');
 
     try {
       const response = await fetch('/api/auth/simple-login', {
@@ -25,26 +25,26 @@ export default function LoginPage() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ email, password }),
-      })
+      });
 
-      const data = await response.json()
+      const data = await response.json();
 
       if (response.ok) {
         // Store user data in localStorage
-        localStorage.setItem('user', JSON.stringify(data.user))
-        localStorage.setItem('isAuthenticated', 'true')
-        
+        localStorage.setItem('user', JSON.stringify(data.user));
+        localStorage.setItem('isAuthenticated', 'true');
+
         // Redirect to dashboard
-        router.push('/dashboard')
+        router.push('/dashboard');
       } else {
-        setError(data.error || 'Login failed')
+        setError(data.error || 'Login failed');
       }
     } catch (err) {
-      setError('An error occurred during login')
+      setError('An error occurred during login');
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black flex items-center justify-center px-4 relative overflow-hidden">
@@ -57,21 +57,21 @@ export default function LoginPage() {
 
       <div className="max-w-md w-full space-y-8 relative z-10">
         {/* Logo and Title */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: -30 }}
           animate={{ opacity: 1, y: 0 }}
           className="text-center"
         >
-          <motion.div 
+          <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
-            transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+            transition={{ delay: 0.2, type: 'spring', stiffness: 200 }}
             className="mx-auto h-20 w-20 bg-gradient-to-r from-orange-500 to-orange-600 rounded-2xl flex items-center justify-center mb-6 shadow-2xl shadow-orange-500/25"
           >
             <Zap className="w-10 h-10 text-white" />
           </motion.div>
-          
-          <motion.h2 
+
+          <motion.h2
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
@@ -79,8 +79,8 @@ export default function LoginPage() {
           >
             Welcome Back
           </motion.h2>
-          
-          <motion.p 
+
+          <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
@@ -91,7 +91,7 @@ export default function LoginPage() {
         </motion.div>
 
         {/* Login Form */}
-        <motion.form 
+        <motion.form
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
@@ -104,7 +104,10 @@ export default function LoginPage() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.6 }}
             >
-              <label htmlFor="email" className="block text-sm font-medium text-white/80 mb-3 flex items-center gap-2">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-white/80 mb-3 flex items-center gap-2"
+              >
                 <Mail className="w-4 h-4" />
                 Email Address
               </label>
@@ -115,18 +118,21 @@ export default function LoginPage() {
                 autoComplete="email"
                 required
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={e => setEmail(e.target.value)}
                 className="w-full px-4 py-4 bg-white/5 border border-white/10 rounded-2xl text-white placeholder-white/50 focus:outline-none focus:border-orange-500/50 focus:ring-2 focus:ring-orange-500/20 transition-all duration-300 backdrop-blur-sm"
                 placeholder="Enter your email"
               />
             </motion.div>
-            
+
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.7 }}
             >
-              <label htmlFor="password" className="block text-sm font-medium text-white/80 mb-3 flex items-center gap-2">
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-white/80 mb-3 flex items-center gap-2"
+              >
                 <Lock className="w-4 h-4" />
                 Password
               </label>
@@ -137,7 +143,7 @@ export default function LoginPage() {
                 autoComplete="current-password"
                 required
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={e => setPassword(e.target.value)}
                 className="w-full px-4 py-4 bg-white/5 border border-white/10 rounded-2xl text-white placeholder-white/50 focus:outline-none focus:border-orange-500/50 focus:ring-2 focus:ring-orange-500/20 transition-all duration-300 backdrop-blur-sm"
                 placeholder="Enter your password"
               />
@@ -145,7 +151,7 @@ export default function LoginPage() {
           </div>
 
           {error && (
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               className="bg-red-500/20 border border-red-500/30 rounded-2xl p-4 text-red-400 text-center text-sm backdrop-blur-sm"
@@ -177,25 +183,25 @@ export default function LoginPage() {
         </motion.form>
 
         {/* Additional Links */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.9 }}
           className="text-center space-y-4"
         >
           <div className="text-sm">
-            <span className="text-white/60">Don't have an account? </span>
-            <Link 
-              href="/auth/register" 
+            <span className="text-white/60">Don&apos;t have an account? </span>
+            <Link
+              href="/auth/register"
               className="text-orange-400 hover:text-orange-300 font-medium transition-colors duration-200 hover:underline"
             >
               Sign up here
             </Link>
           </div>
-          
+
           <div className="text-sm">
-            <Link 
-              href="/" 
+            <Link
+              href="/"
               className="text-white/60 hover:text-white/80 transition-colors duration-200 hover:underline flex items-center justify-center gap-2"
             >
               <ArrowRight className="w-4 h-4 rotate-180" />
@@ -205,7 +211,7 @@ export default function LoginPage() {
         </motion.div>
 
         {/* Security Note */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1.0 }}
@@ -220,5 +226,5 @@ export default function LoginPage() {
         </motion.div>
       </div>
     </div>
-  )
+  );
 }

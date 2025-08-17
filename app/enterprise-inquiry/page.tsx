@@ -1,25 +1,25 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import { motion } from 'framer-motion'
-import { 
-  Building, 
-  Users, 
-  DollarSign, 
-  Calendar, 
-  Target, 
+import { useState } from 'react';
+import { motion } from 'framer-motion';
+import {
+  Building,
+  Users,
+  DollarSign,
+  Calendar,
+  Target,
   Zap,
   CheckCircle,
-  AlertCircle
-} from 'lucide-react'
-import FadeIn from '@/components/FadeIn'
-import { HighTechAIIcon } from '@/components/icons'
+  AlertCircle,
+} from 'lucide-react';
+import FadeIn from '@/components/FadeIn';
+import { HighTechAIIcon } from '@/components/icons';
 
 export default function EnterpriseInquiryPage() {
-  const [loading, setLoading] = useState(false)
-  const [submitted, setSubmitted] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const [selectedService, setSelectedService] = useState('')
+  const [loading, setLoading] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [selectedService, setSelectedService] = useState('');
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -32,94 +32,111 @@ export default function EnterpriseInquiryPage() {
     timeline: '',
     teamSize: '',
     currentChallenges: '',
-    goals: ''
-  })
+    goals: '',
+  });
 
   const services = [
     {
       value: 'ai-cold-dm',
       title: 'AI Automated Cold DM',
-      description: 'Automate customer outreach across all social media platforms with intelligent AI chatbots',
-      icon: '💬'
+      description:
+        'Automate customer outreach across all social media platforms with intelligent AI chatbots',
+      icon: '💬',
     },
     {
       value: 'ai-marketing-platform',
       title: 'AI Marketing Platform',
-      description: 'Complete AI-powered marketing intelligence platform with advanced analytics and automation',
-              icon: <HighTechAIIcon className="w-6 h-6" />
-    }
-  ]
+      description:
+        'Complete AI-powered marketing intelligence platform with advanced analytics and automation',
+      icon: <HighTechAIIcon className="w-6 h-6" />,
+    },
+  ];
 
   const budgetOptions = [
     '$50K - $100K USD',
-    '$100K - $250K USD', 
+    '$100K - $250K USD',
     '$250K - $500K USD',
     '$500K - $1M USD',
     '$1M+ USD',
-    'Custom - Let\'s discuss'
-  ]
+    "Custom - Let's discuss",
+  ];
 
   const timelineOptions = [
     'ASAP - Ready to start immediately',
     '1-3 months',
-    '3-6 months', 
+    '3-6 months',
     '6-12 months',
     '12+ months',
-    'Flexible timeline'
-  ]
+    'Flexible timeline',
+  ];
 
   const teamSizeOptions = [
     '1-10 employees',
     '11-50 employees',
     '51-200 employees',
     '201-1000 employees',
-    '1000+ employees'
-  ]
+    '1000+ employees',
+  ];
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value } = e.target
-    setFormData(prev => ({ ...prev, [name]: value }))
-  }
+  const handleInputChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
+  ) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
 
   const handleServiceSelect = (serviceValue: string) => {
-    setSelectedService(serviceValue)
-    setFormData(prev => ({ ...prev, service: serviceValue }))
-  }
+    setSelectedService(serviceValue);
+    setFormData(prev => ({ ...prev, service: serviceValue }));
+  };
 
   const validateForm = () => {
-    const required = ['firstName', 'lastName', 'email', 'company', 'service', 'budget', 'timeline', 'teamSize', 'currentChallenges', 'goals']
-    
+    const required = [
+      'firstName',
+      'lastName',
+      'email',
+      'company',
+      'service',
+      'budget',
+      'timeline',
+      'teamSize',
+      'currentChallenges',
+      'goals',
+    ];
+
     for (const field of required) {
       if (!formData[field as keyof typeof formData].trim()) {
-        return `${field.charAt(0).toUpperCase() + field.slice(1)} is required`
+        return `${field.charAt(0).toUpperCase() + field.slice(1)} is required`;
       }
     }
 
     // Email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(formData.email)) {
-      return 'Please enter a valid email address'
+      return 'Please enter a valid email address';
     }
 
     // Website validation if provided
     if (formData.website && !formData.website.includes('.')) {
-      return 'Please enter a valid website URL'
+      return 'Please enter a valid website URL';
     }
 
-    return null
-  }
+    return null;
+  };
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault()
-    setLoading(true)
-    setError(null)
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
 
     // Validate form
-    const validationError = validateForm()
+    const validationError = validateForm();
     if (validationError) {
-      setError(validationError)
-      setLoading(false)
-      return
+      setError(validationError);
+      setLoading(false);
+      return;
     }
 
     try {
@@ -129,46 +146,50 @@ export default function EnterpriseInquiryPage() {
         submittedAt: new Date().toISOString(),
         status: 'new',
         priority: 'medium',
-        source: 'Enterprise Inquiry Form'
-      }
+        source: 'Enterprise Inquiry Form',
+      };
 
       const response = await fetch('/api/enterprise-inquiry', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(submission)
-      })
+        body: JSON.stringify(submission),
+      });
 
-      const result = await response.json()
+      const result = await response.json();
 
       if (!response.ok) {
-        throw new Error(result.error || 'Failed to submit inquiry')
+        throw new Error(result.error || 'Failed to submit inquiry');
       }
 
       // Store the inquiry in localStorage for admin panel access
       if (result.inquiry) {
         try {
-          const existingInquiries = localStorage.getItem('enterpriseInquiries')
-          const inquiries = existingInquiries ? JSON.parse(existingInquiries) : []
-          inquiries.push(result.inquiry)
-          localStorage.setItem('enterpriseInquiries', JSON.stringify(inquiries))
+          const existingInquiries = localStorage.getItem('enterpriseInquiries');
+          const inquiries = existingInquiries
+            ? JSON.parse(existingInquiries)
+            : [];
+          inquiries.push(result.inquiry);
+          localStorage.setItem(
+            'enterpriseInquiries',
+            JSON.stringify(inquiries)
+          );
         } catch (storageError) {
-          console.error('Error storing inquiry locally:', storageError)
+          console.error('Error storing inquiry locally:', storageError);
           // Don't fail the submission if localStorage fails
         }
       }
 
-      setSubmitted(true)
-      
+      setSubmitted(true);
+
       // Redirect to thank you page after a brief delay
       setTimeout(() => {
-        window.location.href = '/thank-you'
-      }, 2000)
-
+        window.location.href = '/thank-you';
+      }, 2000);
     } catch (err: any) {
-      console.error('Error submitting form:', err)
-      setError(err.message || 'Something went wrong. Please try again.')
+      console.error('Error submitting form:', err);
+      setError(err.message || 'Something went wrong. Please try again.');
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }
 
@@ -183,14 +204,19 @@ export default function EnterpriseInquiryPage() {
           <div className="bg-green-500/10 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-6">
             <CheckCircle className="w-10 h-10 text-green-400" />
           </div>
-          <h1 className="text-2xl font-bold text-white mb-4">Inquiry Submitted Successfully!</h1>
+          <h1 className="text-2xl font-bold text-white mb-4">
+            Inquiry Submitted Successfully!
+          </h1>
           <p className="text-gray-300 mb-4">
-            Thank you for your interest in our enterprise services. Our team will review your inquiry and contact you within 24 hours.
+            Thank you for your interest in our enterprise services. Our team
+            will review your inquiry and contact you within 24 hours.
           </p>
-          <p className="text-sm text-gray-400">Redirecting to thank you page...</p>
+          <p className="text-sm text-gray-400">
+            Redirecting to thank you page...
+          </p>
         </motion.div>
       </div>
-    )
+    );
   }
 
   return (
@@ -203,14 +229,20 @@ export default function EnterpriseInquiryPage() {
               <Building className="w-5 h-5" />
               <span className="font-medium">Enterprise Solutions</span>
             </div>
-            
+
             <h1 className="text-5xl md:text-6xl font-bold text-white mb-6 leading-tight">
-              Scale Your Business with 
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#fc5f17] to-[#fcb80a]"> AI Enterprise Solutions</span>
+              Scale Your Business with
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#fc5f17] to-[#fcb80a]">
+                {' '}
+                AI Enterprise Solutions
+              </span>
             </h1>
-            
+
             <p className="text-xl text-gray-300 leading-relaxed max-w-3xl mx-auto">
-              Ready to transform your enterprise with cutting-edge AI automation? Tell us about your needs and let's discuss how our enterprise solutions can drive unprecedented growth for your business.
+              Ready to transform your enterprise with cutting-edge AI
+              automation? Tell us about your needs and let&apos;s discuss how
+              our enterprise solutions can drive unprecedented growth for your
+              business.
             </p>
           </div>
         </FadeIn>
@@ -332,8 +364,10 @@ export default function EnterpriseInquiryPage() {
                         className="form-select"
                       >
                         <option value="">Select your team size</option>
-                        {teamSizeOptions.map((option) => (
-                          <option key={option} value={option}>{option}</option>
+                        {teamSizeOptions.map(option => (
+                          <option key={option} value={option}>
+                            {option}
+                          </option>
                         ))}
                       </select>
                     </div>
@@ -349,7 +383,7 @@ export default function EnterpriseInquiryPage() {
                     Service Interest *
                   </h2>
                   <div className="grid md:grid-cols-2 gap-4">
-                    {services.map((service) => (
+                    {services.map(service => (
                       <motion.div
                         key={service.value}
                         whileHover={{ scale: 1.02 }}
@@ -362,8 +396,12 @@ export default function EnterpriseInquiryPage() {
                         onClick={() => handleServiceSelect(service.value)}
                       >
                         <div className="text-3xl mb-3">{service.icon}</div>
-                        <h3 className="text-lg font-semibold text-white mb-2">{service.title}</h3>
-                        <p className="text-sm text-gray-300">{service.description}</p>
+                        <h3 className="text-lg font-semibold text-white mb-2">
+                          {service.title}
+                        </h3>
+                        <p className="text-sm text-gray-300">
+                          {service.description}
+                        </p>
                       </motion.div>
                     ))}
                   </div>
@@ -390,8 +428,10 @@ export default function EnterpriseInquiryPage() {
                         className="form-select"
                       >
                         <option value="">Select your budget range</option>
-                        {budgetOptions.map((option) => (
-                          <option key={option} value={option}>{option}</option>
+                        {budgetOptions.map(option => (
+                          <option key={option} value={option}>
+                            {option}
+                          </option>
                         ))}
                       </select>
                     </div>
@@ -407,8 +447,10 @@ export default function EnterpriseInquiryPage() {
                         className="form-select"
                       >
                         <option value="">Select your timeline</option>
-                        {timelineOptions.map((option) => (
-                          <option key={option} value={option}>{option}</option>
+                        {timelineOptions.map(option => (
+                          <option key={option} value={option}>
+                            {option}
+                          </option>
                         ))}
                       </select>
                     </div>
@@ -486,7 +528,8 @@ export default function EnterpriseInquiryPage() {
                     )}
                   </button>
                   <p className="text-sm text-gray-400 mt-4">
-                    Our enterprise team will review your inquiry and contact you within 24 hours
+                    Our enterprise team will review your inquiry and contact you
+                    within 24 hours
                   </p>
                 </div>
               </FadeIn>
@@ -495,5 +538,5 @@ export default function EnterpriseInquiryPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

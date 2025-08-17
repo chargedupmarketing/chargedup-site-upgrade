@@ -1,47 +1,58 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import Link from 'next/link'
-import { motion } from 'framer-motion'
-import { Eye, EyeOff, Loader2, Sparkles, User, Mail, Lock, Zap, ArrowRight, Shield } from 'lucide-react'
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { motion } from 'framer-motion';
+import {
+  Eye,
+  EyeOff,
+  Loader2,
+  Sparkles,
+  User,
+  Mail,
+  Lock,
+  Zap,
+  ArrowRight,
+  Shield,
+} from 'lucide-react';
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     password: '',
-    confirmPassword: ''
-  })
-  const [showPassword, setShowPassword] = useState(false)
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState('')
-  const router = useRouter()
+    confirmPassword: '',
+  });
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+  const router = useRouter();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData(prev => ({
       ...prev,
-      [e.target.name]: e.target.value
-    }))
-  }
+      [e.target.name]: e.target.value,
+    }));
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsLoading(true)
-    setError('')
+    e.preventDefault();
+    setIsLoading(true);
+    setError('');
 
     // Validation
     if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match')
-      setIsLoading(false)
-      return
+      setError('Passwords do not match');
+      setIsLoading(false);
+      return;
     }
 
     if (formData.password.length < 6) {
-      setError('Password must be at least 6 characters long')
-      setIsLoading(false)
-      return
+      setError('Password must be at least 6 characters long');
+      setIsLoading(false);
+      return;
     }
 
     try {
@@ -55,22 +66,24 @@ export default function RegisterPage() {
           email: formData.email,
           password: formData.password,
         }),
-      })
+      });
 
-      const data = await response.json()
+      const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || 'Registration failed')
+        throw new Error(data.error || 'Registration failed');
       }
 
       // Redirect to login page
-      router.push('/auth/login?message=Registration successful! Please sign in.')
+      router.push(
+        '/auth/login?message=Registration successful! Please sign in.'
+      );
     } catch (error: any) {
-      setError(error.message || 'Registration failed. Please try again.')
+      setError(error.message || 'Registration failed. Please try again.');
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black flex items-center justify-center p-4 relative overflow-hidden">
@@ -88,15 +101,15 @@ export default function RegisterPage() {
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-8"
         >
-          <motion.div 
+          <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
-            transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+            transition={{ delay: 0.2, type: 'spring', stiffness: 200 }}
             className="w-20 h-20 bg-gradient-to-r from-orange-500 to-orange-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-2xl shadow-orange-500/25"
           >
             <Zap className="w-10 h-10 text-white" />
           </motion.div>
-          
+
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -106,8 +119,8 @@ export default function RegisterPage() {
             <Sparkles className="w-4 h-4" />
             ChargedUp AI Platform
           </motion.div>
-          
-          <motion.h1 
+
+          <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
@@ -115,8 +128,8 @@ export default function RegisterPage() {
           >
             Create Account
           </motion.h1>
-          
-          <motion.p 
+
+          <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5 }}
@@ -140,7 +153,10 @@ export default function RegisterPage() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.7 }}
             >
-              <label htmlFor="name" className="block text-sm font-medium text-white/80 mb-3 flex items-center gap-2">
+              <label
+                htmlFor="name"
+                className="block text-sm font-medium text-white/80 mb-3 flex items-center gap-2"
+              >
                 <User className="w-4 h-4" />
                 Full Name
               </label>
@@ -164,7 +180,10 @@ export default function RegisterPage() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.8 }}
             >
-              <label htmlFor="email" className="block text-sm font-medium text-white/80 mb-3 flex items-center gap-2">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-white/80 mb-3 flex items-center gap-2"
+              >
                 <Mail className="w-4 h-4" />
                 Email Address
               </label>
@@ -188,7 +207,10 @@ export default function RegisterPage() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.9 }}
             >
-              <label htmlFor="password" className="block text-sm font-medium text-white/80 mb-3 flex items-center gap-2">
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-white/80 mb-3 flex items-center gap-2"
+              >
                 <Lock className="w-4 h-4" />
                 Password
               </label>
@@ -208,7 +230,11 @@ export default function RegisterPage() {
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-4 top-1/2 transform -translate-y-1/2 text-white/60 hover:text-white/80 transition-colors duration-200 p-1 hover:bg-white/10 rounded-lg"
                 >
-                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                  {showPassword ? (
+                    <EyeOff className="w-5 h-5" />
+                  ) : (
+                    <Eye className="w-5 h-5" />
+                  )}
                 </button>
               </div>
             </motion.div>
@@ -219,7 +245,10 @@ export default function RegisterPage() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 1.0 }}
             >
-              <label htmlFor="confirmPassword" className="block text-sm font-medium text-white/80 mb-3 flex items-center gap-2">
+              <label
+                htmlFor="confirmPassword"
+                className="block text-sm font-medium text-white/80 mb-3 flex items-center gap-2"
+              >
                 <Lock className="w-4 h-4" />
                 Confirm Password
               </label>
@@ -239,7 +268,11 @@ export default function RegisterPage() {
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                   className="absolute right-4 top-1/2 transform -translate-y-1/2 text-white/60 hover:text-white/80 transition-colors duration-200 p-1 hover:bg-white/10 rounded-lg"
                 >
-                  {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                  {showConfirmPassword ? (
+                    <EyeOff className="w-5 h-5" />
+                  ) : (
+                    <Eye className="w-5 h-5" />
+                  )}
                 </button>
               </div>
             </motion.div>
@@ -279,7 +312,7 @@ export default function RegisterPage() {
           </form>
 
           {/* Links */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1.2 }}
@@ -317,5 +350,5 @@ export default function RegisterPage() {
         </motion.div>
       </div>
     </div>
-  )
+  );
 }

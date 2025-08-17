@@ -1,18 +1,21 @@
-import { StrategyMeetingForm } from '@/components/StrategyMeetingForm'
-import type { Metadata } from 'next'
+import { StrategyMeetingForm } from '@/components/StrategyMeetingForm';
+import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'Contact Us | ChargedUp Marketing',
-  description: 'Ready to power up your business? Get in touch for a free strategy consultation. Let\'s discuss how we can take your digital marketing to new heights.',
-  keywords: 'contact, consultation, strategy call, marketing consultation, free audit',
+  description:
+    "Ready to power up your business? Get in touch for a free strategy consultation. Let's discuss how we can take your digital marketing to new heights.",
+  keywords:
+    'contact, consultation, strategy call, marketing consultation, free audit',
   openGraph: {
     title: 'Contact Us | ChargedUp Marketing',
-    description: 'Ready to power up your business? Get in touch for a free strategy consultation.',
+    description:
+      'Ready to power up your business? Get in touch for a free strategy consultation.',
     type: 'website',
     url: 'https://chargedupmarketing.com/contact',
-    siteName: 'ChargedUp Marketing'
-  }
-}
+    siteName: 'ChargedUp Marketing',
+  },
+};
 
 export default function ContactPage() {
   return (
@@ -21,9 +24,12 @@ export default function ContactPage() {
       <section className="section">
         <div className="container max-w-6xl">
           <div className="text-center mb-16">
-            <h1 className="h1 mb-6">Let's Power Up Your Business... Together.</h1>
+            <h1 className="h1 mb-6">
+              Let&apos;s Power Up Your Business... Together.
+            </h1>
             <p className="p text-xl max-w-3xl mx-auto">
-              See how we can take your digital marketing to new heights - fast, easy, and no-pressure.
+              See how we can take your digital marketing to new heights - fast,
+              easy, and no-pressure.
             </p>
           </div>
 
@@ -33,10 +39,13 @@ export default function ContactPage() {
               <h2 className="h2 mb-6">What to expect:</h2>
               <div className="space-y-4">
                 <p className="p">
-                  After submitting the form and selecting a time for our call, one of our strategists will reach out to confirm your meeting within 24 hours
+                  After submitting the form and selecting a time for our call,
+                  one of our strategists will reach out to confirm your meeting
+                  within 24 hours
                 </p>
                 <p className="p">
-                  You'll hop on Zoom with our strategists and the real fun begins! We'll chat about:
+                  You&apos;ll hop on Zoom with our strategists and the real fun
+                  begins! We&apos;ll chat about:
                 </p>
                 <ul className="space-y-3">
                   <li className="flex items-start gap-3">
@@ -49,11 +58,15 @@ export default function ContactPage() {
                   </li>
                   <li className="flex items-start gap-3">
                     <div className="w-2 h-2 bg-[#fc5f17] rounded-full mt-2 flex-shrink-0"></div>
-                    <span className="text-white/80">Strategic planning custom to your situation</span>
+                    <span className="text-white/80">
+                      Strategic planning custom to your situation
+                    </span>
                   </li>
                   <li className="flex items-start gap-3">
                     <div className="w-2 h-2 bg-[#fc5f17] rounded-full mt-2 flex-shrink-0"></div>
-                    <span className="text-white/80">Our solutions and transparent pricing</span>
+                    <span className="text-white/80">
+                      Our solutions and transparent pricing
+                    </span>
                   </li>
                 </ul>
               </div>
@@ -62,7 +75,8 @@ export default function ContactPage() {
             <div className="enhanced-card p-8 hover-lift">
               <h3 className="h2 mb-6">Not ready for a call just yet?</h3>
               <p className="p mb-6">
-                That's ok! Feel free to contact us if you have any questions.
+                That&apos;s ok! Feel free to contact us if you have any
+                questions.
               </p>
               <div className="space-y-3">
                 <div className="flex items-center gap-3">
@@ -80,7 +94,9 @@ export default function ContactPage() {
           {/* Form Section */}
           <div className="max-w-2xl mx-auto">
             <div className="text-center mb-8">
-              <h3 className="h2 mb-4">Fill out the form to request your free strategy consultation.</h3>
+              <h3 className="h2 mb-4">
+                Fill out the form to request your free strategy consultation.
+              </h3>
             </div>
             <StrategyMeetingForm />
           </div>
@@ -91,24 +107,32 @@ export default function ContactPage() {
       <section className="section bg-white/5">
         <div className="container max-w-6xl">
           <div className="text-center mb-12">
-            <h2 className="h2 mb-4">Loved by businesses currently scaling up their digital presence.</h2>
+            <h2 className="h2 mb-4">
+              Loved by businesses currently scaling up their digital presence.
+            </h2>
           </div>
-          
+
           <div className="grid md:grid-cols-2 gap-8">
             <div className="enhanced-card p-8 hover-lift">
               <div className="flex items-center gap-1 mb-4">
                 {[...Array(5)].map((_, i) => (
-                  <div key={i} className="w-4 h-4 bg-[#fc5f17] rounded-sm"></div>
+                  <div
+                    key={i}
+                    className="w-4 h-4 bg-[#fc5f17] rounded-sm"
+                  ></div>
                 ))}
               </div>
               <p className="p mb-4">
-                "The ChargedUp team is incredibly professional, responsive, attentive, and results-oriented at all times."
+                &quot;The ChargedUp team is incredibly professional, responsive,
+                attentive, and results-oriented at all times.&quot;
               </p>
               <div className="flex items-center gap-3">
                 <div className="w-12 h-12 bg-[#fc5f17] rounded-full"></div>
                 <div>
                   <p className="font-semibold text-white">Sarah Johnson</p>
-                  <p className="text-sm text-white/60">CEO, TechStart Solutions</p>
+                  <p className="text-sm text-white/60">
+                    CEO, TechStart Solutions
+                  </p>
                 </div>
               </div>
             </div>
@@ -116,11 +140,15 @@ export default function ContactPage() {
             <div className="enhanced-card p-8 hover-lift">
               <div className="flex items-center gap-1 mb-4">
                 {[...Array(5)].map((_, i) => (
-                  <div key={i} className="w-4 h-4 bg-[#fc5f17] rounded-sm"></div>
+                  <div
+                    key={i}
+                    className="w-4 h-4 bg-[#fc5f17] rounded-sm"
+                  ></div>
                 ))}
               </div>
               <p className="p mb-4">
-                "The thing I find most impressive about ChargedUp is their attention to detail and emphasis on data."
+                &quot;The thing I find most impressive about ChargedUp is their
+                attention to detail and emphasis on data.&quot;
               </p>
               <div className="flex items-center gap-3">
                 <div className="w-12 h-12 bg-[#fc5f17] rounded-full"></div>
@@ -134,5 +162,5 @@ export default function ContactPage() {
         </div>
       </section>
     </div>
-  )
+  );
 }
