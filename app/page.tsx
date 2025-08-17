@@ -90,7 +90,17 @@ export default function HomePage() {
         <div className="container grid gap-8 md:grid-cols-2 items-center">
           <FadeIn delay={200}>
             <div className="space-y-6 hero-text">
-              <h1 className="h1">Marketing that gets you <span className="text-brand-accent">Charged‑Up</span> ⚡</h1>
+              <div className="relative">
+                {/* Lightning Bolt Accent SVG behind headline */}
+                <svg 
+                  className="absolute -top-8 -left-8 w-32 h-32 text-[#fcb80a]/20 transform -rotate-12 z-0"
+                  viewBox="0 0 24 24" 
+                  fill="currentColor"
+                >
+                  <path d="M7 2v11h3v9l7-12h-4l4-8z"/>
+                </svg>
+                <h1 className="h1 relative z-10">Marketing that gets you <span className="text-[#fcb80a]">Charged‑Up</span> ⚡</h1>
+              </div>
               
               {/* Slideshow */}
               <div className="relative min-h-[80px]">

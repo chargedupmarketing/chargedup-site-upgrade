@@ -18,10 +18,10 @@ export default function AIAutomationPage() {
                 optimize campaigns in real-time, and achieve unprecedented efficiency and results.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
-                <Link href="/contact" className="header-btn-primary">
+                <Link href="/contact" className="btn-primary">
                   Get Started Today
                 </Link>
-                <Link href="/pricing" className="header-btn-secondary">
+                <Link href="/pricing" className="btn-outline">
                   View Pricing
                 </Link>
               </div>
@@ -48,14 +48,14 @@ export default function AIAutomationPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Service 1 */}
             <FadeIn delay={400}>
-              <div className="text-center group">
-                <div className="w-20 h-20 bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
+              <div className="card p-6 text-center group hover-lift">
+                <div className="w-20 h-20 bg-gradient-to-br from-[#fc5f17] to-[#e54d0e] rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
                   <svg className="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z"/>
                   </svg>
                 </div>
-                <h3 className="text-xl font-semibold text-white mb-3">Campaign Automation</h3>
-                <p className="text-white/70">
+                <h3 className="h3 mb-3">Campaign Automation</h3>
+                <p className="p">
                   Set up intelligent workflows that automatically trigger actions based on user behavior, 
                   ensuring timely and relevant communication with your audience.
                 </p>
@@ -64,14 +64,14 @@ export default function AIAutomationPage() {
 
             {/* Service 2 */}
             <FadeIn delay={500}>
-              <div className="text-center group">
-                <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
+              <div className="card p-6 text-center group hover-lift">
+                <div className="w-20 h-20 bg-gradient-to-br from-[#fcb80a] to-[#e6a600] rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
                   <svg className="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                   </svg>
                 </div>
-                <h3 className="text-xl font-semibold text-white mb-3">Performance Optimization</h3>
-                <p className="text-white/70">
+                <h3 className="h3 mb-3">Performance Optimization</h3>
+                <p className="p">
                   AI algorithms continuously analyze campaign performance and automatically adjust 
                   targeting, bidding, and creative elements for maximum ROI.
                 </p>
@@ -80,15 +80,15 @@ export default function AIAutomationPage() {
 
             {/* Service 3 */}
             <FadeIn delay={600}>
-              <div className="text-center group">
-                <div className="w-20 h-20 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
+              <div className="card p-6 text-center group hover-lift">
+                <div className="w-20 h-20 bg-gradient-to-br from-[#fc5f17] to-[#e54d0e] rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
                   <svg className="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"/>
                     <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/>
                   </svg>
                 </div>
-                <h3 className="text-xl font-semibold text-white mb-3">Lead Nurturing</h3>
-                <p className="text-white/70">
+                <h3 className="h3 mb-3">Lead Nurturing</h3>
+                <p className="p">
                   Intelligent lead scoring and automated nurturing sequences that guide prospects 
                   through your funnel with personalized content and timing.
                 </p>

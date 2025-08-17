@@ -1,6 +1,6 @@
 'use client'
 import Link from 'next/link'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Menu, X, ChevronDown } from 'lucide-react'
 import Image from 'next/image'
 
@@ -8,6 +8,17 @@ export function Header(){
   const [open,setOpen] = useState(false)
   const [servicesOpen, setServicesOpen] = useState(false)
   const [aboutOpen, setAboutOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
+
+  // Add scroll effect
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 10)
+    }
+    
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
   
   return (
     <>
@@ -16,7 +27,11 @@ export function Header(){
         <span className="font-bold">ChargedUp!</span> Your SUPERCHARGED SaaS Marketing Solution ⚡
       </div>
       
-      <header className="sticky top-0 z-50 bg-black/80 backdrop-blur border-b border-white/10">
+      <header className={`sticky top-0 z-50 backdrop-blur-md border-b border-white/10 transition-all duration-300 ${
+        scrolled 
+          ? 'bg-black/95 shadow-xl border-white/20' 
+          : 'bg-black/90 shadow-lg'
+      }`}>
       <div className="container flex items-center justify-between h-16 px-4">
         {/* Left side - Logo and Navigation */}
         <div className="flex items-center gap-8">
