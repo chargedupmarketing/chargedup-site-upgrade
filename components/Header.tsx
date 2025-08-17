@@ -48,7 +48,7 @@ export function Header(){
           </Link>
 
           {/* Navigation Links - Next to logo */}
-          <nav className="hidden md:flex items-center gap-4 text-sm">
+          <nav className="hidden md:flex items-center gap-4 text-sm" role="navigation" aria-label="Main navigation">
             {/* About Us Dropdown */}
             <div
               className="relative"
@@ -61,9 +61,14 @@ export function Header(){
                 }, 100)
               }}
             >
-              <button className="nav-link-hover flex items-center gap-1">
+              <button 
+                className="nav-link-hover flex items-center gap-1"
+                aria-expanded={aboutOpen}
+                aria-haspopup="true"
+                aria-label="About Us menu"
+              >
                 About Us
-                <ChevronDown className="w-4 h-4" />
+                <ChevronDown className="w-4 h-4" aria-hidden="true" />
               </button>
               
               {/* Dropdown Menu */}
@@ -72,10 +77,12 @@ export function Header(){
                   className="about-dropdown absolute top-full left-0 mt-3 w-64 bg-white/95 backdrop-blur-sm border border-gray-200/50 rounded-2xl shadow-xl py-4"
                   onMouseEnter={() => setAboutOpen(true)}
                   onMouseLeave={() => setAboutOpen(false)}
+                  role="menu"
+                  aria-label="About Us submenu"
                 >
-                  <Link href="/case-studies" className="flex items-center gap-4 px-6 py-4 text-gray-700 hover:text-gray-900 hover:bg-gray-50/80 transition-all duration-300 mx-3 rounded-xl">
+                  <Link href="/case-studies" className="flex items-center gap-4 px-6 py-4 text-gray-700 hover:text-gray-900 hover:bg-gray-50/80 transition-all duration-300 mx-3 rounded-xl" role="menuitem">
                     <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center flex-shrink-0">
-                      <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                      <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
                         <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                       </svg>
                     </div>
@@ -275,14 +282,25 @@ export function Header(){
         </div>
 
         {/* Mobile Menu Button */}
-        <button className="md:hidden text-white" onClick={()=>setOpen(v=>!v)} aria-label="Toggle menu">
+        <button 
+          className="md:hidden text-white" 
+          onClick={()=>setOpen(v=>!v)} 
+          aria-label={open ? "Close menu" : "Open menu"}
+          aria-expanded={open}
+          aria-controls="mobile-menu"
+        >
           {open ? <X size={24} /> : <Menu size={24} />}
         </button>
       </div>
 
       {/* Mobile Menu */}
       {open && (
-        <div className="md:hidden border-t border-white/10 bg-black/90 backdrop-blur">
+        <div 
+          id="mobile-menu"
+          className="md:hidden border-t border-white/10 bg-black/90 backdrop-blur"
+          role="navigation"
+          aria-label="Mobile navigation menu"
+        >
           <div className="container py-4 px-4 space-y-4">
             <nav className="space-y-3">
               <div className="space-y-2">

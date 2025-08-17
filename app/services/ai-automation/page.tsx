@@ -1,6 +1,28 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import FadeIn from '@/components/FadeIn'
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'AI Automation & Optimization | ChargedUp Marketing',
+  description: 'Leverage AI-powered automation to optimize your marketing campaigns in real-time. Achieve unprecedented efficiency and results with our intelligent marketing solutions.',
+  keywords: 'AI automation, marketing automation, campaign optimization, lead nurturing, marketing efficiency',
+  openGraph: {
+    title: 'AI Automation & Optimization | ChargedUp Marketing',
+    description: 'Leverage AI-powered automation to optimize your marketing campaigns in real-time.',
+    type: 'website',
+    url: 'https://chargedupmarketing.com/services/ai-automation',
+    siteName: 'ChargedUp Marketing',
+    images: [
+      {
+        url: '/hero-visual.png',
+        width: 1200,
+        height: 630,
+        alt: 'AI Automation & Optimization Services'
+      }
+    ]
+  }
+}
 
 export default function AIAutomationPage() {
   return (

@@ -1,4 +1,18 @@
 import { StrategyMeetingForm } from '@/components/StrategyMeetingForm'
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Contact Us | ChargedUp Marketing',
+  description: 'Ready to power up your business? Get in touch for a free strategy consultation. Let\'s discuss how we can take your digital marketing to new heights.',
+  keywords: 'contact, consultation, strategy call, marketing consultation, free audit',
+  openGraph: {
+    title: 'Contact Us | ChargedUp Marketing',
+    description: 'Ready to power up your business? Get in touch for a free strategy consultation.',
+    type: 'website',
+    url: 'https://chargedupmarketing.com/contact',
+    siteName: 'ChargedUp Marketing'
+  }
+}
 
 export default function ContactPage() {
   return (
